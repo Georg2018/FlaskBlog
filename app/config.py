@@ -1,3 +1,6 @@
+'''
+The config of the blog. If there is a ".env" file in the folder, the application will read the related value in this file and override the default value in the application.
+'''
 import dotenv
 import os
 
