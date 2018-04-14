@@ -7,6 +7,6 @@ def create_app(config_name):
 	config[config_name].init_app(app)
 
 	from .blueprints import main_blueprint
-	app.register_blueprint(main_blueprint)
+	app.register_blueprint(main_blueprint, template_folder='../templates/main')
 
 	return app
