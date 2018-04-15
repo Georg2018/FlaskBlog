@@ -2,7 +2,22 @@
 
 {% block title %}Index{% endblock %}
 
+{% block navbar %}
+	<div class="navbar-nav navbar-right">
+		{% if current_user.is_authenticated %}
+		<a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">logout</a>
+		{% else %}
+		<a class="nav-item nav-link" href="{{ url_for('auth.login') }}">login</a>
+		<a class="nav-item nav-link" href="{{ url_for('auth.register') }}">register</a>
+		{% endif %}
+	</div>
+{% endblock %}
+
 {% block content %}
-{{ super() }}
-Welcome to this blog!
+{{ super() }} 
+{% if current_user.is_authenticated %}
+	Hello, {{ current_user.username }}!
+{% else %}
+	Hello, Stranger!
+{% endif %}
 {% endblock %}

@@ -28,19 +28,23 @@
 				<div class="navbar-nav">
 					<a class="nav-item nav-link" href="{{ url_for('main.index') }}">Home</a>
 				</div>
-
-				{% block nav %}
+				{% block navbar %}
 				{% endblock %}
 			</div>
 		</nav>
 	</header>
 
 	<section>
-		<h3>
+		{% for message in get_flashed_messages() %}
+		<div class="alert alert-info alert-dissmission fade show">
+		{{ message }}
+		<button type="button" class="close" data-dismiss="alert">
+			<span>&times;</span>
+		</button>
+		</div>
+		{% endfor %}
 		{% block content %}
-		Hello, Stranger!
 		{% endblock %}
-		</h3>
 	</section>
 
 	<!-- <footer class="footer navbar-fixed-bottom p-2">

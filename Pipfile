@@ -6,6 +6,12 @@ name = "pypi"
 [packages]
 flask = "*"
 python-dotenv = "*"
+flask-sqlalchemy = "*"
+flask-login = "*"
+flask-wtf = "*"
+flask-bcrypt = "*"
+flask-migrate = "*"
+flask-mail = "*"
 
 [dev-packages]
 

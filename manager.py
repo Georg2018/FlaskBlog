@@ -2,9 +2,12 @@
 A set of utility tools of managering the blog application.
 '''
 import os
-from app import create_app
+from flask_migrate import Migrate, upgrade
+from app import create_app, db
+from app.models import User
 
-app = create_app(os.environ.get('FLASK_CONFIG') or 'development')
+app = create_app(os.environ.get('FLASK_CONFIG') or 'testing')
+migrate = Migrate(app, db)
 
 @app.shell_context_processor
 def make_context():
@@ -13,7 +16,12 @@ def make_context():
 
 	:return: Return a dict which include some context information.
 	'''
-	return dict(test=test)
+	return dict(app=app, migrate=migrate, db=db, User=User)
+
+@app.cli.command()
+def create():
+	db.create_all()
+	app.run()
 
 @app.cli.command()
 def test():

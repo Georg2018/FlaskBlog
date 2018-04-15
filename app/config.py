@@ -5,13 +5,14 @@ import dotenv
 import os
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-envpath = os.path.join(basedir, '../.env')
+envpath = os.path.join(basedir, '.env')
 
 if os.path.exists(envpath):
 	dotenv.load_dotenv(envpath, override=True)
 
 class BasicConfig():
 	SECRET_KEY = os.environ.get("FLASK_SECRET_KEY") or "This is a Secrete key!"
+	SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 	@staticmethod
 	def init_app(app):
@@ -19,10 +20,14 @@ class BasicConfig():
 
 class DevelopmentConfig(BasicConfig):
 	DEBUG = True
+	SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URI') or "sqlite:///" + os.path.join(basedir, "data-dev.sqlite")
 
 class TestingConfig(BasicConfig):
+	DEBUG = True
 	TESTING = True
 	WTF_CSRF_ENABLED = False
+	WTF_CSRF_CHECK_DEFAULT = False
+	SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URI') or "sqlite:///" + os.path.join(basedir, "data-test.sqlite")
 
 config = {
 	"development": DevelopmentConfig,

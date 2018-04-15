@@ -5,7 +5,7 @@
 }
 
 nav {
-	border-radius:10px;
+	/*border-radius:10px;*/
 }
 
 section {
@@ -16,6 +16,10 @@ section {
 h3 {
 	margin-top:5%;
 	margin-left:5%;
+}
+
+.form-help {
+	color:pink;
 }
 
 /*.footer {

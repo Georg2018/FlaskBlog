@@ -1,3 +1,6 @@
+'''
+Simplely test the initialize process of the application.
+'''
 import unittest
 from flask import current_app
 from app import create_app
@@ -23,12 +26,6 @@ class InitialTestCase(unittest.TestCase):
 	def test_test_env(self):
 		'''Test if the instance's mod is testing. '''
 		self.assertTrue(self.app.config['TESTING'])
-
-	def test_index_page(self):
-		'''Test whether initialing the beginning page is successful.'''
-		response = self.client.get('/')
-		self.assertEqual(response.status_code, 200)
-		self.assertTrue('Hello, Stranger!' in response.get_data(as_text=True))
 
 if __name__ == '__main__':
 	unittest.main()

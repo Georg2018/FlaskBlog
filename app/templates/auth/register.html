@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{%block navbar %}
+	<div class="navbar-nav navbar-right">
+		<a class="nav-item nav-link" href="{{ url_for('auth.login') }}">login</a>
+	</div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-10 col-md-8 col-lg-6">
+		{{ super() }}
+		<h3 class="ml-0">Register</h3>
+		<form method="POST" action="{{ url_for('auth.register') }}">
+			{{ form.hidden_tag() }}
+			<div class="form-group">
+				{{ form.email.label }}
+				{% if form.email.errors %}
+					{% for error in form.email.errors %}
+						<small class="form-help text-muted">{{ error }}</small>
+					{% endfor %}
+				{% endif %}
+				{{ form.email(class="form-control") }}
+			</div>
+			<div class="form-group">
+				{{ form.username.label }}
+				{% if form.username.errors %}
+					{% for error in form.username.errors %}
+						<small class="form-help text-muted">{{ error }}</small>
+					{% endfor %}
+				{% endif %}
+				{{ form.username(class="form-control") }}
+			</div>
+			<div class="form-group">
+				{{ form.password.label }}
+				{% if form.password.errors %}
+					{% for error in form.password.errors %}
+						<small class="form-help text-muted">{{ error }}</small>
+					{% endfor %}
+				{% endif %}
+				{{ form.password(class="form-control") }}
+			</div>
+			<div class="form-group">
+				{{ form.password2.label }}
+				{% if form.password2.errors %}
+					{% for error in form.password2.errors %}
+						<small class="form-help text-muted">{{ error }}</small>
+					{% endfor %}
+				{% endif %}
+				{{ form.password2(class="form-control") }}
+			</div>
+			{{ form.submit(class="form-control btn btn-dark", style="float:right") }}
+		</form>
+	</div>
+</div>
+{% endblock %}
