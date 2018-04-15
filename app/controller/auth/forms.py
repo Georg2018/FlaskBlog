@@ -5,7 +5,7 @@ from wtforms import ValidationError
 from .. import User
 
 class RegisterForm(FlaskForm):
-	email = StringField('Email', validators=[DataRequired(), Length(1,20), Email(), Regexp('^[a-zA-Z0-9.]+@[a-zA-Z]+\.[a-zA-Z]+$', 0, 'Your email\'s format is invalid.')])
+	email = StringField('Email', validators=[DataRequired(), Length(1,20), Email(), Regexp('^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+$', 0, 'Your email\'s format is invalid.')])
 	username = StringField('Username', validators=[DataRequired(), Length(1,20), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0, 'Username must have only letter, numbers, dots or underscores.')])
 	password = PasswordField('Password', validators=[DataRequired(), Length(1,20), EqualTo("password2", message="The two password must match.")])
 	password2 = PasswordField('Comfirm password.', validators=[DataRequired(), Length(1,20)])

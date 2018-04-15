@@ -16,7 +16,8 @@ def make_context():
 
 	:return: Return a dict which include some context information.
 	'''
-	return dict(app=app, migrate=migrate, db=db, User=User)
+	from app import mail
+	return dict(app=app, migrate=migrate, db=db, User=User, mail=mail)
 
 @app.cli.command()
 def create():

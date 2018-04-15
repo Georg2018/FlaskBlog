@@ -15,9 +15,13 @@
 
 {% block content %}
 {{ super() }} 
+<div class="row justify-content-center">
+	<h3 class="lead">
 {% if current_user.is_authenticated %}
 	Hello, {{ current_user.username }}!
 {% else %}
 	Hello, Stranger!
 {% endif %}
+	</h3>
+</div>
 {% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+Unconfirmed
+{% endblock %}
+
+{% block navbar %}
+	<div class="navbar-nav navbar-right">
+		<a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">logout</a>
+	</div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 col-lg-8 text-center">
+		<h3>Unconfirmed.</h3>
+		<p class="lead">The reason your meet this page is because your account has not been confirmed.But we have sent a email to your mailbox.Once you check it you can access other page.</p>
+		<a href="{{ url_for('auth.resendMail') }}">Not received?</a>
+	</div>
+</div>
+{% endblock %}

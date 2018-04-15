@@ -8,9 +8,8 @@ from app import create_app
 class InitialTestCase(unittest.TestCase):
 	@classmethod
 	def setUpClass(cls):
-		'''Add app context and test client.'''
+		'''Add app context.'''
 		cls.app = create_app('testing')
-		cls.client = cls.app.test_client()
 		cls.app_context = cls.app.app_context()
 		cls.app_context.push()
 

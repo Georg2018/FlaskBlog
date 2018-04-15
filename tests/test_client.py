@@ -1,9 +1,13 @@
+'''
+Test basic clien access.
+'''
 import unittest
-from flask import current_app
 from app import create_app, db
+from app.models import User
 
 class userAuthTestCase(unittest.TestCase):
 	def setUp(self):
+		'''Build the test environment.'''
 		self.app = create_app('testing')
 		self.client = self.app.test_client(use_cookies=True)
 		self.app_context = self.app.app_context()
@@ -11,6 +15,7 @@ class userAuthTestCase(unittest.TestCase):
 		db.create_all()
 
 	def tearDown(self):
+		'''Clear resource.'''
 		self.app_context.pop()
 		db.session.remove()
 		db.drop_all()
@@ -42,6 +47,11 @@ class userAuthTestCase(unittest.TestCase):
 			}, follow_redirects=True)
 		self.assertTrue('You have successfully registered a account.' in response.get_data(as_text=True))
 
+		user = User.query.filter_by(username="test").first()
+		user.confirmed = True
+		db.session.add(user)
+		db.sessoin.commit()
+
 		#login
 		response = self.client.post('/auth/login', data={
 			"identifier":"test@test.com",
@@ -54,3 +64,6 @@ class userAuthTestCase(unittest.TestCase):
 		response = self.client.get('/auth/logout', follow_redirects=True)
 		self.assertEqual(response.status_code, 200)
 		self.assertTrue('Hello, Stranger!' in response.get_data(as_text=True))
+
+if __name__ == '__main__':
+	unittest.main()
