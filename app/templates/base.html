@@ -16,11 +16,29 @@
 	{% endblock %}
 </head>
 <body>
+	<div class="modal fade" id="logoutmodal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modaltitle">Logout?</h5>
+					<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+				</div>
+				<div class="modal-body">
+					<p>Are you sure you want to logout?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-info" data-dismiss="modal">No</button>
+					<button class="btn btn-success" onclick="window.location.href='{{ url_for('auth.logout') }}'">Logout</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="container col-sm-12 col-md-10 col-lg-8 pl-0 pr-0">
 
 	<header>
 		<nav class="navbar navbar-dark bg-info navbar-expand-md navbar-fixed-row fixed-top border border-info">
-			<a class="navbar-brand" href="{{ url_for('main.index') }}">Blog</a>
+			<a class="navbar-brand ml-2 mr-3" href="{{ url_for('main.index') }}">Blog!</a>
 			<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar"><span class="navbar-toggler-icon"></span>
 			</button>
 
@@ -33,7 +51,13 @@
 				<div class="navbar-nav ml-auto">
 				{% block navbar_right %}
 				{% if current_user.is_authenticated %}
-					<a class="nav-item nav-link" href="{{ url_for('auth.logout') }}">logout</a>
+					<div class="nav-item dropdown account">
+						<a class="nav-link dropdown-toggle active" href="#" data-toggle="dropdown">Account</a>
+						<div class="dropdown-menu">
+							<button class="dropdown-item btn" onclick="window.location.href='{{ url_for('auth.changepass') }}'">change password</button>
+							<button class="dropdown-item btn" data-toggle="modal" data-target="#logoutmodal">logout</button>
+						</div>
+					</div>
 				{% else %}
 					<a class="nav-item nav-link" href="{{ url_for('auth.login') }}">login</a>
 					<a class="nav-item nav-link" href="{{ url_for('auth.register') }}">register</a>

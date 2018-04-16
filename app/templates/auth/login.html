@@ -20,7 +20,7 @@ Login
 				{{ form.identifier.label }}
 				{% if form.identifier.errors %}
 					{% for error in form.identifier.errors %}
-						<small class="form-help text-muted">{{ error }}</small>
+						<br /><small class="form-help text-muted">{{ error }}</small>
 					{% endfor %}
 				{% endif %}
 				{{ form.identifier(class="form-control") }}
@@ -29,7 +29,7 @@ Login
 				{{ form.password.label }}
 				{% if form.password.errors %}
 					{% for error in form.password.errors %}
-						<small class="form-help text-muted">{{ error }}</small>
+						<br /><small class="form-help text-muted">{{ error }}</small>
 					{% endfor %}
 				{% endif %}
 				{{ form.password(class="form-control") }}

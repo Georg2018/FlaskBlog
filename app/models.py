@@ -10,6 +10,8 @@ class User(db.Model):
 	password_hash = db.Column(db.String(128))
 	confirmed = db.Column(db.Boolean, default=False)
 
+	active = True
+
 	@property
 	def password(self):
 		raise AttributeError('Can\'t get the password palintext.')
@@ -21,20 +23,22 @@ class User(db.Model):
 	def check_password(self, password):
 		return bcrypt.check_password_hash(self.password_hash, password)
 
+	@property
 	def is_authenticated(self):
-		if isinstance(self, AnonymousUserMixin):
-			return False
-		else:
-			return True
-
-	def is_anonymous(self):
-		if isinstance(self, AnonymousUserMixin):
-			return True
-		else:
-			return False
-
-	def is_active(self):
 		return True
+
+	@property
+	def is_anonymous(self):
+		return False
+
+	@property
+	def is_active(self):
+		return self.active
+
+	@is_active.setter
+	def is_active(self, value):
+		self.active = value
+		return self.active
 
 	def get_id(self):
 		return str(self.id)
@@ -65,6 +69,24 @@ class User(db.Model):
 			return user.id
 		else:
 			return False
+
+class AnonymousUser():
+	@property
+	def is_authenticated(self):
+		return False
+
+	@property
+	def is_anonymous(self):
+		return True
+
+	@property
+	def is_active(self):
+		return False
+
+	def get_id(self):
+		return None
+
+login_manager.anonymous_user = AnonymousUser
 
 @login_manager.user_loader
 def load_user(user_id):

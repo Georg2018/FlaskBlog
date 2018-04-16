@@ -21,7 +21,7 @@ Register
 				{{ form.email.label }}
 				{% if form.email.errors %}
 					{% for error in form.email.errors %}
-						<small class="form-help text-muted">{{ error }}</small>
+						<br /><small class="form-help text-muted">{{ error }}</small>
 					{% endfor %}
 				{% endif %}
 				{{ form.email(class="form-control") }}
@@ -30,7 +30,7 @@ Register
 				{{ form.username.label }}
 				{% if form.username.errors %}
 					{% for error in form.username.errors %}
-						<small class="form-help text-muted">{{ error }}</small>
+						<br /><small class="form-help text-muted">{{ error }}</small>
 					{% endfor %}
 				{% endif %}
 				{{ form.username(class="form-control") }}
@@ -39,7 +39,7 @@ Register
 				{{ form.password.label }}
 				{% if form.password.errors %}
 					{% for error in form.password.errors %}
-						<small class="form-help text-muted">{{ error }}</small>
+						<br /><small class="form-help text-muted">{{ error }}</small>
 					{% endfor %}
 				{% endif %}
 				{{ form.password(class="form-control") }}
@@ -48,12 +48,12 @@ Register
 				{{ form.password2.label }}
 				{% if form.password2.errors %}
 					{% for error in form.password2.errors %}
-						<small class="form-help text-muted">{{ error }}</small>
+						<br /><small class="form-help text-muted">{{ error }}</small>
 					{% endfor %}
 				{% endif %}
 				{{ form.password2(class="form-control") }}
 			</div>
-			{{ form.submit(class="form-control btn btn-dark", style="float:right") }}
+			{{ form.submit(class="form-control btn btn-dark") }}
 		</form>
 	</div>
 </div>

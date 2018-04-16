@@ -36,7 +36,7 @@ class userAuthTestCase(unittest.TestCase):
 			"password":"12345678",
 			"password2":""
 			})
-		self.assertTrue('The two password must match.' in response.get_data(as_text=True))
+		self.assertTrue('The two password must matched.' in response.get_data(as_text=True))
 
 		#register
 		response = self.client.post('/auth/register', data={
@@ -64,6 +64,34 @@ class userAuthTestCase(unittest.TestCase):
 		response = self.client.get('/auth/logout', follow_redirects=True)
 		self.assertEqual(response.status_code, 200)
 		self.assertTrue('Hello, Stranger!' in response.get_data(as_text=True))
+
+	def test_password_change(self):
+		'''Test changeing password when know the original password.'''
+		user = User(email="test@test.com", username="test", password="12345678")
+		user.confirmed = True
+		db.session.add(user)
+		db.session.commit()
+
+		response = self.client.post('/auth/login', data={
+			"identifier":"test@test.com",
+			"password":"12345678",
+			"remember_me":False
+			}, follow_redirects=True)
+		self.assertTrue('Hello, test!' in response.get_data(as_text=True))
+
+		response = self.client.post('/auth/changepass', data={
+			"old_password":"12345678",
+			"new_password":"87654321",
+			"new_password2":"87654321"
+			}, follow_redirects=True)
+		self.assertTrue('successfully' in response.get_data(as_text=True))
+
+		response = self.client.post('/auth/login', data={
+			"identifier":"test@test.com",
+			"password":"87654321",
+			"remember_me":False
+			}, follow_redirects=True)
+		self.assertTrue('Hello, test!' in response.get_data(as_text=True))
 
 if __name__ == '__main__':
 	unittest.main()

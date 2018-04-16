@@ -4,7 +4,7 @@ Auth blueprint's view. Defined the route of the auth blueprint and the related l
 import re
 from flask import render_template, url_for, redirect, flash, request
 from flask_login import current_user, login_required, login_user, logout_user
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm
 from . import auth
 from .. import db
 from .. import User, send_mail
@@ -35,7 +35,7 @@ def register():
 		send_mail(user.email, 'Confirmed your account.', '/auth/mail/confirmed', user=user, token=token)
 
 		flash('You have successfully registered a account.')
-		flash('We have send a confirmed email to your mailbox.Please check it for verification.')
+		flash('We have send a confirmed email to your mailbox. Please check it for verification.')
 		return redirect(url_for('auth.login'))
 
 	return render_template('auth/register.html', form=form)
@@ -95,11 +95,9 @@ def resendMail():
 	Resend confirmed email.
 	'''
 	if current_user.confirmed:
-		flash('You hace been confirmed.')
 		return redirect(url_for('main.index'))
 
 	if not current_user.is_authenticated:
-		flash('You have not login.')
 		return redirect(url_for('auth.login'))
 
 	token = current_user.generate_confirmed_token()
@@ -107,3 +105,30 @@ def resendMail():
 
 	flash('We have resent a confirmed email.')
 	return render_template('auth/unconfirmed.html')
+
+@auth.route('changepass', methods=['GET', 'POST'])
+def changepass():
+	'''
+	Change password, only when the user know the original password.
+	'''
+	if current_user.is_anonymous:
+		return redirect(url_for('auth.login'))
+
+	form = ChangePasswordForm()
+	if form.validate_on_submit():
+		user = current_user._get_current_object()
+
+		if user.check_password(form.old_password.data):
+			user.password = form.new_password.data
+			db.session.add(user)
+			db.session.commit()
+
+			logout()
+
+			flash('You have successfully changed your password. Please login again.')
+			return redirect(url_for('auth.login'))
+		else:
+			flash('Original password error. Please try again.')
+			return redirect(url_for('auth.changepass'))
+
+	return render_template('auth/changepass.html', form=form)
