@@ -69,13 +69,16 @@ def logout():
 
 @auth.route('confirmed/<token>')
 def confirmed(token):
-	if current_user.confirmed:
+	'''
+	Email confirmed.
+	'''
+	if current_user.is_authenticated and current_user.confirmed:
 		flash('You have been confirmed.')
 		return redirect(url_for('main.index'))
 
 	user_id = User.verify_confirmed_token(token)
 
-	if not user_id:
+	if user_id:
 		flash('You have successfully verify your account.')
 		return redirect(url_for('auth.login'))
 
@@ -84,6 +87,9 @@ def confirmed(token):
 
 @auth.route('resendMail')
 def resendMail():
+	'''
+	Resend confirmed email.
+	'''
 	if current_user.confirmed:
 		flash('You hace been confirmed.')
 		return redirect(url_for('main.index'))

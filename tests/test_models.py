@@ -4,6 +4,7 @@ Test auth function.
 import unittest
 from app import create_app, db
 from app.models import User
+import time
 
 class UserModelTest(unittest.TestCase):
 	def setUp(self):
@@ -16,6 +17,7 @@ class UserModelTest(unittest.TestCase):
 	def tearDown(self):
 		'''Clear resource.'''
 		self.app_context.pop()
+		db.session.remove()
 		db.drop_all()
 
 	def test_password_setter(self):
@@ -36,21 +38,27 @@ class UserModelTest(unittest.TestCase):
 
 	def test_confirmed_token(self):
 		'''Test whether the confirmed token can be generated correctly.'''
-		user = User(password="test")
+		user = User(email="test@test.com", username="test", password="test")
+		db.session.add(user)
+		db.session.commit()
 		token = user.generate_confirmed_token()
 		token_error = "ErrorToken"
 
 		with self.subTest(token=token_error):
-			self.assertFalse(user.verify_confirmed_token(token))
+			self.assertFalse(user.verify_confirmed_token(token_error))
 
 		with self.subTest(token=token):
 			self.assertTrue(user.verify_confirmed_token(token))
 
 	def test_confirmed_token_expiration(self):
 		'''Test the token expiration mechanism.'''
-		user = User(password="test")
+		user = User(email="test@test.com", username="test", password="test")
+		db.session.add(user)
+		db.session.commit()
 		token = user.generate_confirmed_token(expiration=0)
 
+		time.sleep(1)
+		
 		self.assertFalse(user.verify_confirmed_token(token))
 
 if __name__ == '__main__':

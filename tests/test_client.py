@@ -50,7 +50,7 @@ class userAuthTestCase(unittest.TestCase):
 		user = User.query.filter_by(username="test").first()
 		user.confirmed = True
 		db.session.add(user)
-		db.sessoin.commit()
+		db.session.commit()
 
 		#login
 		response = self.client.post('/auth/login', data={

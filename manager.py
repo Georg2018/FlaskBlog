@@ -5,6 +5,7 @@ import os
 from flask_migrate import Migrate, upgrade
 from app import create_app, db
 from app.models import User
+from app import config
 
 app = create_app(os.environ.get('FLASK_CONFIG') or 'testing')
 migrate = Migrate(app, db)
@@ -21,6 +22,9 @@ def make_context():
 
 @app.cli.command()
 def create():
+	'''
+	Perform some necessary commands then run a app instance.
+	'''
 	db.create_all()
 	app.run()
 
@@ -30,7 +34,7 @@ def test():
 	Add the "test" command to the Flask cli context. It will activate the unittest instance which locates in the tests folder.
 	'''
 	import unittest
-
+	
 	tests = unittest.TestLoader().discover("tests")
 	runner = unittest.TextTestRunner(verbosity=3)
 	runner.run(tests)

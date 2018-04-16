@@ -15,7 +15,7 @@ Login
 	<div class="col col-sm-10 col-md-8 col-lg-6">
 		<h3 class="ml-0">Login</h3>
 		<form method="POST" action="{{ url_for('auth.login') }}">
-			{{ form.hidden_tag() }}
+			{{ form.csrf_token }}
 			<div class="form-group">
 				{{ form.identifier.label }}
 				{% if form.identifier.errors %}

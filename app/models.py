@@ -47,13 +47,16 @@ class User(db.Model):
 	def verify_confirmed_token(token):
 		serializer = Serializer(current_app.config['SECRET_KEY'])
 		try:
-			user_id = serializer.loads(token)
+			user_id = serializer.loads(token)['user_id']
 		except BadSignature:
 			return False
 		except SignatrueExpired:
 			return False
 
-		user = User.query.get(id=user_id)
+		try:
+			user = User.query.get(user_id)
+		except:
+			return False
 
 		if user is not None and not user.confirmed:
 			user.confirmed = True
