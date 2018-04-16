@@ -45,6 +45,7 @@ class TestingConfig(BasicConfig):
 	TESTING = True
 
 	MAIL_DEBUG = (os.environ.get('MAIL_DEBUG') or 'False') == str(True)
+	MAIL_SUPPRESS_SEND = True
 	WTF_CSRF_ENABLED = False
 	WTF_CSRF_CHECK_DEFAULT = False
 	

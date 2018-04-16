@@ -20,6 +20,9 @@ def before_request():
 
 @auth.route('register', methods=['GET', 'POST'])
 def register():
+	if current_user.is_authenticated:
+		return redirect(url_for('main.index'))
+
 	form = RegisterForm()
 	if form.validate_on_submit():
 		user = User(email=form.email.data, username=form.username.data, password=form.password.data)
@@ -67,8 +70,9 @@ def logout():
 	logout_user()
 	return redirect(url_for('main.index'))
 
+@auth.route('confirmed')
 @auth.route('confirmed/<token>')
-def confirmed(token):
+def confirmed(token=""):
 	'''
 	Email confirmed.
 	'''
