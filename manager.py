@@ -18,7 +18,7 @@ def make_context():
 	:return: Return a dict which include some context information.
 	'''
 	from app import mail
-	return dict(app=app, migrate=migrate, db=db, User=User, mail=mail)
+	return dict(app=app, migrate=migrate, db=db, User=User, mail=mail, create_app=create_app)
 
 @app.cli.command()
 def create():
@@ -36,7 +36,7 @@ def test():
 	import unittest
 	
 	tests = unittest.TestLoader().discover("tests")
-	runner = unittest.TextTestRunner(verbosity=3)
+	runner = unittest.TextTestRunner(verbosity=5)
 	runner.run(tests)
 
 if __name__ == '__main__':

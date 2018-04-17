@@ -7,6 +7,10 @@ from app.models import User
 import time
 
 class UserModelTest(unittest.TestCase):
+	@classmethod
+	def setUpClass(cls):
+		db.drop_all()
+
 	def setUp(self):
 		'''Build the test environment.'''
 		self.app = create_app('testing')

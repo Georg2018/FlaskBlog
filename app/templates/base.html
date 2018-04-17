@@ -16,11 +16,13 @@
 	{% endblock %}
 </head>
 <body>
+
+	{% block pre_content %}
 	<div class="modal fade" id="logoutmodal" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="modaltitle">Logout?</h5>
+					<h5 class="modal-title" id="modaltitle">Logout</h5>
 					<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 				</div>
 				<div class="modal-body">
@@ -28,11 +30,12 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-info" data-dismiss="modal">No</button>
-					<button class="btn btn-success" onclick="window.location.href='{{ url_for('auth.logout') }}'">Logout</button>
+					<button class="btn btn-dark" onclick="window.location.href='{{ url_for('auth.logout') }}'">Logout</button>
 				</div>
 			</div>
 		</div>
 	</div>
+	{% endblock %}
 
 	<div class="container col-sm-12 col-md-10 col-lg-8 pl-0 pr-0">
 
@@ -70,7 +73,7 @@
 
 	<section class="mt-5">
 		{% for message in get_flashed_messages() %}
-		<div class="alert alert-warning alert-dissmission fade show">
+		<div class="alert alert-success alert-dissmission fade show">
 		{{ message }}
 		<button type="button" class="close" data-dismiss="alert">
 			<span>&times;</span>

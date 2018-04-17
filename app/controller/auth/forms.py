@@ -6,7 +6,7 @@ from flask_login import current_user
 from .. import User
 
 class RegisterForm(FlaskForm):
-	email = StringField('Email', validators=[DataRequired(), Length(1,20), Email(), Regexp('^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+$', 0, 'Your email\'s format is invalid.')])
+	email = StringField('Email', validators=[DataRequired(), Length(1,20), Email()])
 	username = StringField('Username', validators=[DataRequired(), Length(1,20), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0, 'Username must have only letter, numbers, dots or underscores.')])
 	password = PasswordField('Password', validators=[DataRequired(), Length(8,20), EqualTo("password2", message="The two password must matched.")])
 	password2 = PasswordField('Comfirm password.', validators=[DataRequired()])
@@ -30,4 +30,9 @@ class ChangePasswordForm(FlaskForm):
 	old_password = PasswordField('Password', validators=[DataRequired()])
 	new_password = PasswordField('New password', validators=[DataRequired(), Length(8,20), EqualTo('new_password2', message="Two new password must matched.")])
 	new_password2 = PasswordField('Confirmed new password', validators=[DataRequired()])
+	submit = SubmitField('Submit')
+
+class ChangeEmailForm(FlaskForm):
+	password = PasswordField('Password', validators=[DataRequired()])
+	new_email = StringField('New email', validators=[DataRequired(), Length(1,20), Email()])
 	submit = SubmitField('Submit')
