@@ -65,5 +65,19 @@ class UserModelTest(unittest.TestCase):
 		
 		self.assertFalse(user.verify_confirmed_token(token))
 
+	def test_resetpass_token(self):
+		'''Test the token used by reset pass.'''
+		user = User(email="test@test.com", username="test", password="test")
+		db.session.add(user)
+		db.session.commit()
+		
+		token = user.generate_resetpass_token()
+
+		with self.subTest(info="error_token"):
+			self.assertFalse(user.verify_resetpass_token('error'))
+
+		with self.subTest(info="correct_token"):
+			self.assertTrue(user.verify_resetpass_token(token))
+
 if __name__ == '__main__':
 	unittest.main()

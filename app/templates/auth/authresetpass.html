@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Reset password
+{% endblock %}
+
+{% block content %}
+	<div class="row justify-content-center">
+		<div class="col col-sm-10 col-md-8 col-lg-6">
+			<h3 class="ml-0">Reset password</h3>
+			<form method="POST" action="{{ url_for('auth.authresetpass') }}">
+				{{ form.hidden_tag() }}
+				{{ macros.field(form.username) }}
+				{{ form.submit(class="form-control btn btn-dark") }}
+			</form>
+		</div>
+	</div>
+{% endblock %}

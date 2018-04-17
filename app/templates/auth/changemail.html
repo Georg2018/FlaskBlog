@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Change mail
+{% endblock %}
+
+{% block content %}
+	<div class="row justify-content-center">
+		<div class="col col-sm-10 col-md-8 col-lg-6">
+			<h3 class="ml-0">Change mail</h3>
+			<form method="POST" action="{{ url_for('auth.changemail') }}">
+				{{ form.hidden_tag() }}
+				{{ macros.field(form.password) }}
+				{{ macros.field(form.new_email) }}
+				{{ form.submit(class="form-control btn btn-dark") }}
+			</form>
+		</div>
+	</div>
+{% endblock %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "_macro.html" as macros %}
 
 {% block title %}
 Change password
@@ -9,35 +10,12 @@ Change password
 	<div class="col col-sm-10 col-md-8 col-lg-6">
 		<h3 class="ml-0">Change password</h3>
 		<form method="POST" action="{{ url_for('auth.changepass') }}">
-		{{ form.csrf_token }}
-		<div class="form-group">
-			{{ form.old_password.label }}
-			{% if form.old_password.errors %}
-				{% for error in form.old_password.errors %}
-					<br /><small class="form-help text-muted">{{ error }}</small>
-				{% endfor %}
-			{% endif %}
-			{{ form.old_password(class="form-control") }}
-		</div>
-		<div class="form-group">
-			{{ form.new_password.label }}
-			{% if form.new_password.errors %}
-				{% for error in form.new_password.errors %}
-					<br /><small class="form-help text-muted">{{ error }}</small>
-				{% endfor %}
-			{% endif %}
-			{{ form.new_password(class="form-control") }}
-		</div>
-		<div class="form-group">
-			{{ form.new_password2.label }}
-			{% if form.new_password2.errors %}
-				{% for error in form.new_password2.errors %}
-					<br /><small class="form-help text-muted">{{ error }}</small>
-				{% endfor %}
-			{% endif %}
-			{{ form.new_password2(class="form-control") }}
-		</div>
+		{{ form.hidden_tag() }}
+		{{ macros.field(form.old_password) }}
+		{{ macros.field(form.new_password) }}
+		{{ macros.field(form.new_password2) }}
 		{{ form.submit(class="form-control btn btn-dark") }}
+		</form>
 	</div>
 </div>
 {% endblock %}

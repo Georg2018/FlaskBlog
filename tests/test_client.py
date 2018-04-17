@@ -106,5 +106,50 @@ class userAuthTestCase(unittest.TestCase):
 			}, follow_redirects=True)
 		self.assertTrue('Hello, test!' in response.get_data(as_text=True))
 
+	def test_change_email(self):
+		'''Test changing email.'''
+		user = User(email="test@test.com", username="test", password="12345678")
+		user.confirmed= True
+		db.session.add(user)
+		db.session.commit()
+
+		response = self.client.post('/auth/login', data={
+			"identifier":"test",
+			"password":"12345678",
+			"remember_me":False
+			}, follow_redirects=True)
+		self.assertTrue('Hello, test!' in response.get_data(as_text=True))
+
+		response = self.client.post('/auth/changemail', data={
+			"password":"12345678",
+			"new_email":"new@email.com"
+			}, follow_redirects=True)
+		self.assertTrue('Unconfirmed.' in response.get_data(as_text=True))
+
+		user.confirmed = True
+		db.session.add(user)
+		db.session.commit()
+
+		response = self.client.get('/')
+		self.assertTrue('Hello' in response.get_data(as_text=True))
+
+	def test_reset_password(self):
+		'''Test resetting password.'''
+		user = User(email='test@test.com', username='test', password="12345678")
+		db.session.add(user)
+		db.session.commit()
+
+		response = self.client.post('/auth/authresetpass', data={
+			"username":"test"
+			}, follow_redirects=True)
+		self.assertTrue('We have seet a mail to you.' in response.get_data(as_text=True))
+
+		token = user.generate_resetpass_token()
+		response = self.client.post('/auth/resetpass/'+token, data={
+			"password":"87654321"
+			}, follow_redirects=True)
+
+		self.assertTrue('You have successfully resert your password.' in response.get_data(as_text=True))
+
 if __name__ == '__main__':
 	unittest.main()

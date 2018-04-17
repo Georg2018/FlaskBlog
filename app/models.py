@@ -9,8 +9,7 @@ class User(db.Model):
 	username = db.Column(db.String(128), unique=True, index=True)
 	password_hash = db.Column(db.String(128))
 	confirmed = db.Column(db.Boolean, default=False)
-
-	active = True
+	active = db.Column(db.Boolean, default=True)
 
 	@property
 	def password(self):
@@ -66,7 +65,32 @@ class User(db.Model):
 			user.confirmed = True
 			db.session.add(user)
 			db.session.commit()
-			return user.id
+			return user
+		else:
+			return False
+
+	def generate_resetpass_token(self, expiration=300):
+		serializer = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return serializer.dumps({'user_id':self.id}).decode()
+
+	@staticmethod
+	def verify_resetpass_token(token):
+		serializer = Serializer(current_app.config['SECRET_KEY'])
+
+		try:
+			user_id = serializer.loads(token)['user_id']
+		except BadSignature:
+			return False
+		except SignatureExpired:
+			return False
+
+		try:
+			user = User.query.get(user_id)
+		except:
+			return False
+
+		if user is not None:
+			return user
 		else:
 			return False
 

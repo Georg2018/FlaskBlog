@@ -1,0 +1,11 @@
+{% macro field(field) %}
+<div class="form-group">
+	{{ field.label }}
+	{% if field.errors %}
+		{% for error in field.errors %}
+				<br /><small class="form-help text-muted">{{ error }}</small>
+		{% endfor %}
+	{% endif %}
+	{{ field(class="form-control") }}
+</div>
+{% endmacro %}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import "_macro.html" as macros %}
 
 {% block title %}
 Login
@@ -15,31 +16,18 @@ Login
 	<div class="col col-sm-10 col-md-8 col-lg-6">
 		<h3 class="ml-0">Login</h3>
 		<form method="POST" action="{{ url_for('auth.login') }}">
-			{{ form.csrf_token }}
-			<div class="form-group">
-				{{ form.identifier.label }}
-				{% if form.identifier.errors %}
-					{% for error in form.identifier.errors %}
-						<br /><small class="form-help text-muted">{{ error }}</small>
-					{% endfor %}
-				{% endif %}
-				{{ form.identifier(class="form-control") }}
-			</div>
-			<div class="form-group">
-				{{ form.password.label }}
-				{% if form.password.errors %}
-					{% for error in form.password.errors %}
-						<br /><small class="form-help text-muted">{{ error }}</small>
-					{% endfor %}
-				{% endif %}
-				{{ form.password(class="form-control") }}
-			</div>
+			{{ form.hidden_tag() }}
+			{{ macros.field(form.identifier) }}
+			{{ macros.field(form.password) }}
 			<div class="form-group mb-2">
 				{{ form.remember_me(class="ml-2") }}
 				{{ form.remember_me.label }}
 			</div>
-			{{ form.submit(class=" form-control btn btn-dark") }}
+			<div class="form-group">
+			{{ form.submit(class=" form-control btn btn-success ml-auto") }}
+			</div>
 		</form>
+			<button class="form-control btn btn-dark" onclick="window.location.href='{{ url_for('auth.authresetpass') }}'">Forget password</button>
 	</div>
 </div>
 {% endblock %}

@@ -32,7 +32,19 @@ class ChangePasswordForm(FlaskForm):
 	new_password2 = PasswordField('Confirmed new password', validators=[DataRequired()])
 	submit = SubmitField('Submit')
 
-class ChangeEmailForm(FlaskForm):
+class ChangeMailForm(FlaskForm):
 	password = PasswordField('Password', validators=[DataRequired()])
 	new_email = StringField('New email', validators=[DataRequired(), Length(1,20), Email()])
+	submit = SubmitField('Submit')
+
+	def validate_new_email(slef, field):
+		if User.query.filter_by(email=field.data).first():
+			raise ValidationError('This email has been used.')
+
+class AuthResetPassForm(FlaskForm):
+	username = StringField('Username', validators=[DataRequired()])
+	submit = SubmitField('Submit')
+
+class ResetPassForm(FlaskForm):
+	password = PasswordField('Password', validators=[DataRequired()])
 	submit = SubmitField('Submit')
