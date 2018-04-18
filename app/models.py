@@ -5,9 +5,43 @@ import hashlib
 from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 
+permissions = db.Table(
+	'permissions',
+	db.Column('permission_id', db.Integer, db.ForeignKey('permission.id')),
+	db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
+
+permissions_dict = {
+	"admin":["Do anythings.", False],
+	
+	"post":["Can publish blog.", True],
+	"editpost":["Edit post.", True],
+	"comment":["Can add comment.", True],
+	"editcomment":["Edit comment.", True],
+	"follow":["Follow user.", True],
+	"editinfo":["Edit the user's own information.", True]
+}
+
+class Permission(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	name = db.Column(db.String(64), unique=True, nullable=False, index=True)
+	description = db.Column(db.String(128))
+	default = db.Column(db.Boolean, default=True)
+
+	@staticmethod
+	def insert_permissions(permissions):
+		for name, detail in permissions.items():
+			try:
+				role = Permission(name=name, description=detail[0], default=detail[1])
+				db.session.add(role)
+				db.session.commit()
+			except:
+				db.session.rollback()
+
 class User(db.Model):
-	'''Notice: Becauser the email is implemented to the property, you can\'t filter the
-	   email in the User.query. Use _email field to filter in the query instead.  
+	'''
+	Notice: Becauser the email is implemented by the property, you can\'t filter the
+	 email in the User.query. Use _email field to filter in the query instead.  
 	'''
 	id = db.Column(db.Integer(), primary_key=True)
 	_email = db.Column(db.String(128), unique=True, index=True)
@@ -16,15 +50,28 @@ class User(db.Model):
 	confirmed = db.Column(db.Boolean, default=False)
 	active = db.Column(db.Boolean, default=True)
 
-	avatar_url = db.Column(db.String(128), default='')
+	permissions = db.relationship(
+				'Permission',
+				secondary=permissions,
+				backref=db.backref('users', lazy='dynamic'),
+				lazy='dynamic')
 
 	name = db.Column(db.String(64))
 	age = db.Column(db.Integer())
 	location = db.Column(db.String(128))
 	about_me = db.Column(db.Text())
+	avatar_url = db.Column(db.String(128), default='')
 
 	member_since = db.Column(db.DateTime(), default=datetime.utcnow)
 	last_since = db.Column(db.DateTime(), default=datetime.utcnow)
+
+	def __init__(self, *arg, **kwargs):
+		'''Add all of the default roles for the user when create a instance.'''
+		list(map(lambda role:self.permissions.append(role), Permission.query.filter_by(default=True).all()))
+		db.session.add(self)
+		db.session.commit()
+
+		super(User, self).__init__(*arg, **kwargs)
 
 	@property
 	def email(self):

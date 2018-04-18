@@ -4,7 +4,7 @@ A set of utility tools of managering the blog application.
 import os
 from flask_migrate import Migrate, migrate, upgrade
 from app import create_app, db
-from app.models import User
+from app.models import User, Permission
 from app import config
 
 app = create_app(os.environ.get('FLASK_CONFIG') or 'testing')
@@ -18,7 +18,8 @@ def make_context():
 	:return: Return a dict which include some context information.
 	'''
 	from app import mail
-	return dict(app=app, migrate=migrate, db=db, User=User, mail=mail, create_app=create_app)
+	return dict(app=app, migrate=migrate, db=db, User=User, Permission=Permission, mail=mail, \
+		create_app=create_app)
 
 @app.cli.command()
 def create():

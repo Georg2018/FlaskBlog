@@ -21,7 +21,7 @@ login_manager.session_protection = 'strong'
 
 def create_app(config_name):
 	'''
-	To creat a application instance, import a name of the config object which locates in the config.py file.
+	To creat a application instance, introduct a name of the config object which locates in the config.py file.
 	'''
 	app = Flask(__name__)
 	app.config.from_object(config[config_name])
