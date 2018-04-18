@@ -54,7 +54,7 @@
 				<div class="navbar-nav ml-auto">
 				{% block navbar_right %}
 				{% if current_user.is_authenticated %}
-					<div class="nav-item dropdown account">
+					<div class="nav-item dropdown account mr-3">
 						<a class="nav-link dropdown-toggle active" href="#" data-toggle="dropdown">Account</a>
 						<div class="dropdown-menu">
 							<button class="dropdown-item btn" onclick="window.location.href='{{ url_for('auth.changepass') }}'">change password</button>
@@ -62,6 +62,8 @@
 							<button class="dropdown-item btn" data-toggle="modal" data-target="#logoutmodal">logout</button>
 						</div>
 					</div>
+
+					<img class="avatar" src="{{ current_user.avatar_url }}" style="width:40px;height:40px" />
 				{% else %}
 					<a class="nav-item nav-link" href="{{ url_for('auth.login') }}">login</a>
 					<a class="nav-item nav-link" href="{{ url_for('auth.register') }}">register</a>

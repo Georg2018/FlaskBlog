@@ -1,15 +1,30 @@
 from . import db, bcrypt, login_manager
 from flask_login import AnonymousUserMixin, current_user
-from flask import current_app
+from flask import current_app, request
+import hashlib
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 
 class User(db.Model):
 	id = db.Column(db.Integer(), primary_key=True)
-	email = db.Column(db.String(128), unique=True, index=True)
+	_email = db.Column(db.String(128), unique=True, index=True)
 	username = db.Column(db.String(128), unique=True, index=True)
 	password_hash = db.Column(db.String(128))
 	confirmed = db.Column(db.Boolean, default=False)
 	active = db.Column(db.Boolean, default=True)
+
+	avatar_url = db.Column(db.String(128), default='')
+
+	@property
+	def email(self):
+		return self._email
+
+	@email.setter
+	def email(self, new_email):
+		old_email = self._email
+		self._email = new_email
+
+		if old_email != new_email:
+			self.avatar_url = self.generate_gravatar_url()
 
 	@property
 	def password(self):
@@ -93,6 +108,11 @@ class User(db.Model):
 			return user
 		else:
 			return False
+
+	def generate_gravatar_url(self, size=40, default='identicon', rating='x'):
+		url = 'http://www.gravatar.com/avatar'
+		mail_hash = hashlib.md5(self._email.encode('utf-8')).hexdigest()
+		return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(url=url, hash=mail_hash, size=size, default=default, rating=rating)
 
 class AnonymousUser():
 	@property

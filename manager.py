@@ -2,7 +2,7 @@
 A set of utility tools of managering the blog application.
 '''
 import os
-from flask_migrate import Migrate, upgrade
+from flask_migrate import Migrate, migrate, upgrade
 from app import create_app, db
 from app.models import User
 from app import config
