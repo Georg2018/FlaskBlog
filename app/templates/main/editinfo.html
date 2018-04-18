@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+ 
+{% block title %}
+Edit user info
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 col-lg-8">
+		{{ macros.setting_nav('info') }}
+		<form class="mt-4" method="POST" action="{{ url_for('main.user_info_edit') }}">
+			{{ form.hidden_tag() }}
+			{{ macros.field(form.name) }}
+			{{ macros.field(form.age) }}
+			{{ macros.field(form.location) }}
+			{{ macros.field(form.about_me) }}
+			{{ form.submit(class="form-control btn-info") }}
+		</form>
+	</div>
+</div>
+{% endblock %}

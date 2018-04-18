@@ -7,12 +7,14 @@ from flask_login import current_user, login_required, login_user, logout_user
 from .forms import RegisterForm, LoginForm, ChangePasswordForm, ChangeMailForm, \
 					AuthResetPassForm, ResetPassForm
 from . import auth
-from .. import db
-from .. import User, send_mail
+from .. import db, User, send_mail
 
 @auth.before_app_request
 def before_request():
 	if current_user.is_authenticated:
+		current_user.update_last_since()
+		db.session.add(current_user._get_current_object())
+		db.session.commit()
 		if not current_user.confirmed \
 						and request.endpoint \
 						and request.blueprint != 'auth' \
@@ -49,7 +51,7 @@ def login():
 	form = LoginForm()
 	if form.validate_on_submit():
 		if re.match('^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+$', form.identifier.data):
-			user = User.query.filter_by(email=form.identifier.data).first()
+			user = User.query.filter_by(_email=form.identifier.data).first()
 		else:
 			user = User.query.filter_by(username=form.identifier.data).first()
 

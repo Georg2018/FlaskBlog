@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+page not found
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-10 col-md-8 col-lg-6 text-center">
+		<h3 class="lead">Oops!</h3>
+		<p>The page you requested was lost.</p>
+	</div>
+</div>
+		<img class="col" src="{{ url_for('static', filename='image/404.jpg') }}" />
+{% endblock %}

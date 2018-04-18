@@ -2,9 +2,13 @@ from . import db, bcrypt, login_manager
 from flask_login import AnonymousUserMixin, current_user
 from flask import current_app, request
 import hashlib
+from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 
 class User(db.Model):
+	'''Notice: Becauser the email is implemented to the property, you can\'t filter the
+	   email in the User.query. Use _email field to filter in the query instead.  
+	'''
 	id = db.Column(db.Integer(), primary_key=True)
 	_email = db.Column(db.String(128), unique=True, index=True)
 	username = db.Column(db.String(128), unique=True, index=True)
@@ -13,6 +17,14 @@ class User(db.Model):
 	active = db.Column(db.Boolean, default=True)
 
 	avatar_url = db.Column(db.String(128), default='')
+
+	name = db.Column(db.String(64))
+	age = db.Column(db.Integer())
+	location = db.Column(db.String(128))
+	about_me = db.Column(db.Text())
+
+	member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+	last_since = db.Column(db.DateTime(), default=datetime.utcnow)
 
 	@property
 	def email(self):
@@ -109,10 +121,17 @@ class User(db.Model):
 		else:
 			return False
 
-	def generate_gravatar_url(self, size=40, default='identicon', rating='x'):
+	def generate_gravatar_url(self, size=150, default='identicon', rating='x'):
 		url = 'http://www.gravatar.com/avatar'
 		mail_hash = hashlib.md5(self._email.encode('utf-8')).hexdigest()
 		return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(url=url, hash=mail_hash, size=size, default=default, rating=rating)
+
+	def update_last_since(self):
+		self.last_since = datetime.utcnow()
+		db.session.add(self)
+		db.session.commit()
+
+		return self.last_since
 
 class AnonymousUser():
 	@property

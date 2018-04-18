@@ -5,6 +5,8 @@ import unittest
 from app import create_app, db
 from app.models import User
 import time
+from datetime import datetime
+import hashlib
 
 class UserModelTest(unittest.TestCase):
 	@classmethod
@@ -78,6 +80,36 @@ class UserModelTest(unittest.TestCase):
 
 		with self.subTest(info="correct_token"):
 			self.assertTrue(user.verify_resetpass_token(token))
+
+	def test_avatar_url(self):
+		'''Test the avatar_url generating function.'''
+		email = "test@test.com"
+		user = User(email=email, username="test", password="test")
+
+		avatar_hash = hashlib.md5(email.encode()).hexdigest()
+
+		self.assertTrue(avatar_hash in user.avatar_url)
+
+	def test_account_member_since(self):
+		'''Test the member_since value.'''
+		user = User(email="test@test.com", username="test", password="test")
+		db.session.add(user)
+		db.session.commit()
+
+		self.assertTrue((datetime.utcnow() - user.member_since).total_seconds() < 3)
+		self.assertTrue((datetime.utcnow() - user.last_since).total_seconds() < 3)
+
+	def test_account_last_since(self):
+		'''Test the updata_last_since function.'''
+		user = User(email="test@test.com", username="test", password="test")
+		db.session.add(user)
+		db.session.commit()
+
+		last = user.last_since
+		time.sleep(2)
+		now = user.update_last_since()
+
+		self.assertTrue((now-last).total_seconds() > 2)
 
 if __name__ == '__main__':
 	unittest.main()

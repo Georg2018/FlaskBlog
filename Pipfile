@@ -12,6 +12,7 @@ flask-wtf = "*"
 flask-bcrypt = "*"
 flask-migrate = "*"
 flask-mail = "*"
+flask-moment = "*"
 
 [dev-packages]
 

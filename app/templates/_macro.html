@@ -9,3 +9,14 @@
 	{{ field(class="form-control") }}
 </div>
 {% endmacro %}
+
+{% macro setting_nav(page) %}
+<ul class="nav nav-tabs">
+	<li class="nav-item">
+		<a class="nav-link {% if page=='info' %}active{% endif %}" href="{{ url_for('main.user_info_edit') }}">info edit</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link {% if page!='info' %}active{% endif %}" href="{{ url_for('main.account_setting') }}">account setting</a>
+	</li>
+</ul>
+{% endmacro %}

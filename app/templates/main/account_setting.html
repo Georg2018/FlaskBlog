@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+account setting
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 col-lg-8 text-center">
+		{{ macros.setting_nav('setting') }}
+		<button type="button" class="btn btn-dark col-6 mt-5" onclick="window.location.href='{{ url_for('auth.changepass') }}'">change password</button>
+		<button type="button" class="btn btn-dark col-6 mt-5" onclick="window.location.href='{{ url_for('auth.changemail') }}'">change email</button>
+	</div>
+</div>
+{% endblock %}

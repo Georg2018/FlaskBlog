@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+User
+{% endblock %}
+
+{% block content %}
+	<div class="row justify-content-center">
+		<div class="col col-sm-12 col-md-10 col-lg-9">
+			<div class="card border-info bg-light text-info">
+				<div class="card-body">
+				<div class="row">
+					<div class="col col-9">
+						<em><h2>{{ user.username }}</h2></em>
+						<p><strong>Age:</strong> {{ user.age }}</p>
+						<p><strong>Location:</strong> {{ user.location }}</p>
+					</div>
+					<div class="col col-3">
+						<img class="float-right" src="{{ user.avatar_url }}" style="width:100px;height:100px" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="col col-9">
+					<p><strong>About me:</strong> {{ user.about_me }}</p>
+					<p><strong>Member since: </strong>{{ moment(user.member_since).fromNow() }}</p>
+					</div>
+					<div class="col col-3">
+					{% if current_user.is_authenticated %}
+						{% if current_user.id == user.id %}
+							<a class="float-right btn btn-info mt-3" href="{{ url_for('main.user_info_edit') }}">edit my profile</a>
+						{% endif %}
+					{% endif %}
+					</div>
+				</div>
+			</div>
+					<div class="card-footer pb-0 text-muted">
+					<p>Last login: {{ moment(user.last_since).fromNow() }}</p>
+				</div>
+				</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.lang('en') }}
+{% endblock %}

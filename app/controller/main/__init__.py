@@ -3,5 +3,5 @@ The blog's main blueprint. Contain the logic of publishing, modifying, and displ
 '''
 from flask import Blueprint
 
-main = Blueprint('main', __name__, url_prefix='/')
-from . import view
+main = Blueprint('main', __name__)
+from . import view, errors
