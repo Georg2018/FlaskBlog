@@ -12,7 +12,7 @@ class RegisterForm(FlaskForm):
 	submit = SubmitField('Submit')
 
 	def validate_email(self, field):
-		if User.query.filter_by(email=field.data).first():
+		if User.query.filter_by(_email=field.data).first():
 			raise ValidationError('This email has been used.')
 
 	def validate_username(self, field):
@@ -37,7 +37,7 @@ class ChangeMailForm(FlaskForm):
 	submit = SubmitField('Submit')
 
 	def validate_new_email(slef, field):
-		if User.query.filter_by(email=field.data).first():
+		if User.query.filter_by(_email=field.data).first():
 			raise ValidationError('This email has been used.')
 
 class AuthResetPassForm(FlaskForm):

@@ -3,7 +3,7 @@ The controller of the application. Which include the logic of the interaction of
 '''
 from ..models import *
 from ..email import send_mail
+from ..principal import require, need
 
 from .main import main
 from .auth import auth
-

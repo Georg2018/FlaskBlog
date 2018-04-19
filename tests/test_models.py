@@ -3,7 +3,7 @@ Test auth function.
 '''
 import unittest
 from app import create_app, db
-from app.models import User
+from app.models import User, Permission, permissions_dict
 import time
 from datetime import datetime
 import hashlib
@@ -110,6 +110,51 @@ class UserModelTest(unittest.TestCase):
 		now = user.update_last_since()
 
 		self.assertTrue((now-last).total_seconds() > 2)
+
+class PermissionModelTest(unittest.TestCase):
+	@classmethod
+	def setUpClass(cls):
+		db.drop_all()
+
+	def setUp(self):
+		'''Build the test environment.'''
+		self.app = create_app('testing')
+		self.app_context = self.app.app_context()
+		self.app_context.push()
+		db.create_all()
+
+	def tearDown(self):
+		'''Clear resource.'''
+		self.app_context.pop()
+		db.session.remove()
+		db.drop_all()
+
+	def test_insert_permissions(self):
+		'''Test inserting permissions to the Permission Model.'''
+		Permission.insert_permissions(permissions_dict)
+
+		self.assertTrue(len(permissions_dict) == len(Permission.query.all()))
+
+	def test_user_permission_relationship(self):
+		'''Test that whether both of the User Model and Permission Model has correct relationship.'''
+		user1 = User(email="test1@test.com", username="test1", password="test1")
+		user2 = User(email="test2@test.com", username="test2", password="test2")
+		Permission.insert_permissions(permissions_dict)
+		per1, per2 = Permission.query.get(1), Permission.query.get(2)
+		user1.permissions.append(per1)
+		user1.permissions.append(per2)
+		user2.permissions.append(per1)
+		db.session.add(user1, user2)
+		db.session.commit()
+
+		self.assertTrue(len(user1.permissions.all()) == 2)
+		self.assertTrue(len(user2.permissions.all()) == 1)
+		self.assertTrue(len(per1.users.all()) == 2)
+		self.assertTrue(len(per2.users.all()) == 1)
+
+		self.assertTrue(per1 in user1.permissions.all())
+		self.assertTrue(user1 in per2.users.all())
+		self.assertTrue(user2 in per1.users.all())
 
 if __name__ == '__main__':
 	unittest.main()

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Admin Edit
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 col-lg-8">
+		<h3 class="ml-0">Edit {{ user.username }}'s info</h3>
+		<form method="POST" action="{{ url_for('main.admin_info_edit', username=user.username) }}">
+			{{ form.hidden_tag() }}
+			{{ macros.field(form.email) }}
+			{{ macros.field(form.username) }}
+			<div class="form-group mb-2">
+				{{ form.confirmed(class="ml-2") }}
+				{{ form.confirmed.label }}
+				{% if form.confirmed.errors %}
+					{% for error in form.confirmed.errors %}
+					<br /><small class="form-help text-muted">{{ error }}</small>
+					}
+					{% endfor %}
+				{% endif %}
+			</div>
+			<div class="form-group mb-2">
+				{{ form.active(class="ml-2") }}
+				{{ form.active.label }}
+				{% if form.active.errors %}
+					{% for error in form.active.errors %}
+					<br /><small class="form-help text-muted">{{ error }}
+					{% endfor %}
+				{% endif %}
+			</div>
+			<div class="form-group">
+				{{ form.permission.label }}
+				{% for check in form.permission %}
+				{% if check.data in user_permission %}
+					{{ check(type="checkbox", checked="") }}
+				{% else %}
+					{{ check(type="checkbox") }}
+				{% endif %}
+				{{ check.label }}
+				{% endfor %}
+			</div>
+			<hr />
+			{{ macros.field(form.name) }}
+			{{ macros.field(form.age) }}
+			{{ macros.field(form.location) }}
+			{{ macros.field(form.about_me) }}
+			<div class="form-group">
+			{{ form.submit(class=" form-control btn btn-dark ml-auto") }}
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}

@@ -12,6 +12,7 @@ User
 				<div class="row">
 					<div class="col col-9">
 						<em><h2>{{ user.username }}</h2></em>
+						<p><strong>Realname:</strong> {{ user.name }}</p>
 						<p><strong>Age:</strong> {{ user.age }}</p>
 						<p><strong>Location:</strong> {{ user.location }}</p>
 					</div>
@@ -27,7 +28,10 @@ User
 					<div class="col col-3">
 					{% if current_user.is_authenticated %}
 						{% if current_user.id == user.id %}
-							<a class="float-right btn btn-info mt-3" href="{{ url_for('main.user_info_edit') }}">edit my profile</a>
+							<a class="float-right btn btn-info mt-3" href="{{ url_for('main.user_info_edit') }}" style="width:120%">edit my profile</a>
+						{% endif %}
+						{% if has_permission('admin') %}
+							<a class="float-right btn btn-info mt-3" href="{{ url_for('main.admin_info_edit', username=user.username) }}" style="width:120%">edit by admin</a>
 						{% endif %}
 					{% endif %}
 					</div>

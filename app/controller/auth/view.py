@@ -2,12 +2,13 @@
 Auth blueprint's view. Defined the route of the auth blueprint and the related logic.
 '''
 import re
-from flask import render_template, url_for, redirect, flash, request
+from flask import render_template, url_for, redirect, flash, request, current_app
 from flask_login import current_user, login_required, login_user, logout_user
+from flask_principal import Identity, AnonymousIdentity, identity_changed, Permission
 from .forms import RegisterForm, LoginForm, ChangePasswordForm, ChangeMailForm, \
 					AuthResetPassForm, ResetPassForm
 from . import auth
-from .. import db, User, send_mail
+from .. import db, User, send_mail, require, need
 
 @auth.before_app_request
 def before_request():
@@ -18,7 +19,8 @@ def before_request():
 		if not current_user.confirmed \
 						and request.endpoint \
 						and request.blueprint != 'auth' \
-						and request.endpoint != 'static':
+						and request.endpoint != 'static' \
+						and not Permission(need('admin')).can():
 					return render_template('auth/unconfirmed.html')
 
 @auth.route('register', methods=['GET', 'POST'])
@@ -57,6 +59,10 @@ def login():
 
 		if user is not None and user.check_password(form.password.data):
 			login_user(user, form.remember_me.data)
+			identity_changed.send(current_app._get_current_object(),
+								  identity=Identity(user.id))
+			if Permission(need('admin')).can():
+				flash('Hello, admin!')
 			return redirect(url_for('main.index'))
 		else:
 			flash('Your username/email or password is invalid.')
@@ -71,6 +77,8 @@ def logout():
 		return redirect(url_for('main.index'))
 
 	logout_user()
+	identity_changed.send(current_app._get_current_object(),
+						  identity=AnonymousIdentity())
 	return redirect(url_for('main.index'))
 
 @auth.route('confirmed')

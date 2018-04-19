@@ -15,9 +15,7 @@ permissions_dict = {
 	"admin":["Do anythings.", False],
 	
 	"post":["Can publish blog.", True],
-	"editpost":["Edit post.", True],
 	"comment":["Can add comment.", True],
-	"editcomment":["Edit comment.", True],
 	"follow":["Follow user.", True],
 	"editinfo":["Edit the user's own information.", True]
 }
@@ -68,6 +66,10 @@ class User(db.Model):
 	def __init__(self, *arg, **kwargs):
 		'''Add all of the default roles for the user when create a instance.'''
 		list(map(lambda role:self.permissions.append(role), Permission.query.filter_by(default=True).all()))
+		
+		if kwargs.get('email') == current_app.config.get('FLASK_ADMIN'):
+			self.permissions.append(Permission.query.filter_by(name='admin').first())
+
 		db.session.add(self)
 		db.session.commit()
 

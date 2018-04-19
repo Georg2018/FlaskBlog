@@ -4,10 +4,10 @@ A set of utility tools of managering the blog application.
 import os
 from flask_migrate import Migrate, migrate, upgrade
 from app import create_app, db
-from app.models import User, Permission
+from app.models import User, Permission, permissions_dict
 from app import config
 
-app = create_app(os.environ.get('FLASK_CONFIG') or 'testing')
+app = create_app(os.environ.get('FLASK_CONFIG') or 'development')
 migrate = Migrate(app, db)
 
 @app.shell_context_processor
@@ -27,6 +27,7 @@ def create():
 	Perform some necessary commands then run a app instance.
 	'''
 	db.create_all()
+	Permission.insert_permissions(permissions_dict)
 	app.run()
 
 @app.cli.command()

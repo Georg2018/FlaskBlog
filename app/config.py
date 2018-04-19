@@ -19,10 +19,10 @@ class BasicConfig():
 	MAIL_SERVER = os.environ.get('MAIL_SERVER') or "localhost"
 	MAIL_PORT = os.environ.get('MAIL_PORT') or 25
 	MAIL_USE_TLS = (os.environ.get('MAIL_USE_TLS') or 'False') == str(True)
-	MAIL_USE_SSL = (os.environ.get('MAIL_USE_SSL ') or 'False') == str(True)
+	MAIL_USE_SSL = (os.environ.get('MAIL_USE_SSL') or 'False') == str(True)
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or None
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or None
-	MAIL_SUPPRESS_SEND = (os.environ.get('MAIL_SUPPRESS_SEND = False') or 'False') == str(True)
+	MAIL_SUPPRESS_SEND = (os.environ.get('MAIL_SUPPRESS_SEND') or 'False') == str(True)
 	MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or None
 	MAIL_SUBJECT_PREFIX = os.environ.get('MAIL_SUBJECT_PREFIX') or ''
 
