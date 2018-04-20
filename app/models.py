@@ -1,9 +1,12 @@
 from . import db, bcrypt, login_manager
 from flask_login import AnonymousUserMixin, current_user
+from flask_principal import Permission as pm, Need
 from flask import current_app, request
 import hashlib
 from datetime import datetime
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
+from markdown import markdown
+import bleach
 
 permissions = db.Table(
 	'permissions',
@@ -52,6 +55,11 @@ class User(db.Model):
 				'Permission',
 				secondary=permissions,
 				backref=db.backref('users', lazy='dynamic'),
+				lazy='dynamic')
+
+	posts = db.relationship(
+				'Post',
+				backref='user',
 				lazy='dynamic')
 
 	name = db.Column(db.String(64))
@@ -182,6 +190,11 @@ class User(db.Model):
 
 		return self.last_since
 
+	def can(self, name):
+		if pm(Need('permission', name)).can():
+			return True
+		return False
+
 class AnonymousUser():
 	@property
 	def is_authenticated(self):
@@ -204,3 +217,21 @@ login_manager.anonymous_user = AnonymousUser
 def load_user(user_id):
 	return User.query.get(int(user_id))
 
+class Post(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	title = db.Column(db.String(128), nullable=False, default="Unknow title", index=True)
+	body = db.Column(db.Text)
+	html = db.Column(db.Text)
+	timestamp = db.Column(db.DateTime(), default=datetime.utcnow)
+
+	user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+
+	@staticmethod
+	def on_changed_body(target, value, oldvalue, initiator):
+		allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li', 'ol', \
+						'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'p', 'img']
+		target.html = bleach.linkify(bleach.clean(
+						markdown(value, output_format='html'),\
+						tags=allowed_tags, strip=True))
+
+db.event.listen(Post.body, 'set', Post.on_changed_body)

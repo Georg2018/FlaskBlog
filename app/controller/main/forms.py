@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
+from flask_pagedown.fields import PageDownField
 from wtforms import widgets, StringField, IntegerField, TextField, SubmitField, BooleanField, SelectMultipleField
 from wtforms.validators import Length, NumberRange, DataRequired, Email, Regexp, Optional
 from wtforms import ValidationError
@@ -37,3 +38,8 @@ class AdminInfoEditForm(FlaskForm):
 	def validate_username(self, field):
 		if field.data and field.data != self.user.username and User.query.filter_by(username=field.data).first():
 			raise ValidationError('Username already exists.')
+
+class PostForm(FlaskForm):
+	title = StringField('Title', validators=[Length(1, 128)])
+	body = PageDownField('Input your mind', validators=[DataRequired()])
+	submit = SubmitField('Submit')

@@ -1,16 +1,26 @@
 {% extends "base.html" %}
+{% import "_macro.html" as macros %}
 
 {% block title %}Index{% endblock %}
 
 {% block content %}
 {{ super() }} 
-<div class="row justify-content-center">
+<div class="row ml-2">
 	<h3 class="lead">
 {% if current_user.is_authenticated %}
 	Hello, {{ current_user.username }}!
 {% else %}
 	Hello, Stranger!
 {% endif %}
+	Click <a href="{{ url_for('main.post_submit') }}">here</a> to post a new article, or look at another posts below!
 	</h3>
 </div>
+{{ macros.show_posts(posts, moment) }}
+{{ macros.paginate(pagination, 'main.index') }}
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.lang('en') }}
 {% endblock %}

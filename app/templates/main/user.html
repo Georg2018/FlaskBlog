@@ -1,23 +1,25 @@
 {% extends "base.html" %}
+{% import "_macro.html" as macros %}
 
 {% block title %}
 User
 {% endblock %}
 
 {% block content %}
-	<div class="row justify-content-center">
+	<div class="row justify-content-center mb-5">
 		<div class="col col-sm-12 col-md-10 col-lg-9">
 			<div class="card border-info bg-light text-info">
 				<div class="card-body">
 				<div class="row">
 					<div class="col col-9">
 						<em><h2>{{ user.username }}</h2></em>
+						<p><strong>Article num: </strong>{{ user.posts.count() }}</p>
 						<p><strong>Realname:</strong> {{ user.name }}</p>
 						<p><strong>Age:</strong> {{ user.age }}</p>
 						<p><strong>Location:</strong> {{ user.location }}</p>
 					</div>
 					<div class="col col-3">
-						<img class="float-right" src="{{ user.avatar_url }}" style="width:100px;height:100px" />
+						<img class="float-right" src="{{ user.avatar_url }}" style="width:100px;height:100px"/>
 					</div>
 				</div>
 				<div class="row">
@@ -43,6 +45,8 @@ User
 				</div>
 		</div>
 	</div>
+{{ macros.show_posts(posts, moment) }}
+{{ macros.paginate(pagination, 'main.user') }}
 {% endblock %}
 
 {% block js %}

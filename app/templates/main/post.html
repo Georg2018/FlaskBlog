@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}
+POST
+{% endblock %}
+
+{% block content %}
+<header class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 text-center text-dark">
+		<h1>{{ post.title }}</h1>
+	</div>
+</header>
+<div class="row">
+	<p class="text-muted mb-0"><small><a class="text-dark" href="{{ url_for('main.user', username=post.user.username) }}">{{ post.user.username }}</a><span class="ml-4">{{ moment(post.timestamp).format('MMMM Do YYYY, h:mm:ss a') }}</span></small></p>
+</div>
+<article class="row">
+	<div class="col ml-0 pl-0">
+		{% if post.html %}
+			{{ post.html | safe }}
+		{% else %}
+			{{ post.body }}
+		{% endif %}
+	</div>
+</article>
+<hr />
+{% if post.user.id == current_user.id or has_permission('admin') %}
+<div class="float-right pb-4 mb-4">
+	<button type="button" class="btn btn-info" onclick="window.location.href='{{ url_for('main.post_edit', postid=post.id) }}'">Edit</button>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.lang('en') }}
+{% endblock %}

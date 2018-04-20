@@ -9,6 +9,7 @@ from flask_bcrypt import Bcrypt
 from flask_mail import Mail
 from flask_moment import Moment
 from flask_principal import Principal, Permission, identity_loaded, UserNeed
+from flask_pagedown import PageDown
 from .config import config
 from .principal import need
 
@@ -17,6 +18,7 @@ db = SQLAlchemy()
 mail = Mail()
 moment = Moment()
 principal = Principal()
+pagedown = PageDown()
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.login_message = 'Please login to access this page.'
@@ -36,6 +38,7 @@ def create_app(config_name):
 	mail.init_app(app)
 	moment.init_app(app)
 	principal.init_app(app)
+	pagedown.init_app(app)
 
 	from .controller import main as main_blueprint
 	app.register_blueprint(main_blueprint, template_folder='../templates/main')

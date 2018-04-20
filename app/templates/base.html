@@ -58,11 +58,10 @@
 				<div class="navbar-nav ml-auto">
 				{% block navbar_right %}
 				{% if current_user.is_authenticated %}
+					<a class="nav-item nav-link active"  href="{{ url_for('main.post_submit') }}" style="position:relative;top:1px">Edit!</a>
 					<div class="nav-item dropdown account mr-3">
 						<a class="nav-link dropdown-toggle active" href="#" data-toggle="dropdown">Account</a>
 						<div class="dropdown-menu">
-							<!-- <button class="dropdown-item btn" onclick="window.location.href='{{ url_for('auth.changepass') }}'">change password</button>
-							<button class="dropdown-item btn" onclick="window.location.href='{{ url_for('auth.changemail') }}'">change mail</button> -->
 							<button class="dropdown-item btn" onclick="window.location.href='{{ url_for('main.user', username=current_user.username) }}'">My userpage</button>
 							<button class="dropdown-item btn" onclick="window.location.href='{{ url_for('main.user_info_edit') }}'">Setting</button>
 							<div class="dropdown-divider"></div>

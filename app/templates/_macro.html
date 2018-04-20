@@ -22,10 +22,10 @@
 {% endmacro %}
 
 {% macro paginate(pagination, endpoint) %}
-	{% if pagination.pages == 1 %}
+	{% if pagination.pages == 1 or pagination.pages == 0 %}
 
 	{% else %}
-		<div class="row">
+		<div class="row justify-content-center">
 			<ul class="pagination">
 				{% if pagination.has_prev %}
 					<li class="page-item">
@@ -65,4 +65,41 @@
 			</ul>
 		</div>
 	{% endif %}
+{% endmacro %}
+
+{% macro show_posts(posts, moment) %}
+<div class="row justify-content-center">
+	<div class="col">
+		{% for post in posts %}
+			<div class="card p-3 mb-5">
+				<div class="row">
+					{% if loop.index%2==1 %}
+					<div class="col col-2">
+					{% else %}
+					<div class="col col-2 order-last">
+					{% endif %}
+						<a class="text-info" href="{{ url_for('main.user', username=post.user.username) }}"><img class="col col-12" src="{{ post.user.avatar_url }}" style="min-width:50px"/></a>
+					</div>
+					<div class="col col-10">
+						<header class="row">
+							<div class="col col-sm-12 col-md-10">
+								<h2><a class="text-info" href="{{ url_for('main.post', postid=post.id) }}">{{ post.title }}</a></h2>
+							</div>
+						</header>
+							<p class="text-muted mb-0"><small><a class="text-dark" href="{{ url_for('main.user', username=post.user.username) }}">{{ post.user.username }}</a><span class="ml-4">{{ moment(post.timestamp).format('MMMM Do YYYY, h:mm:ss a') }}</span></small></p>
+						<article class="row">
+							<div class="col">
+								{% if post.html %}
+								{{ post.html | safe }}
+								{% else %}
+								{{ post.body }}
+								{% endif %}
+							</div>
+						</article>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
 {% endmacro %}

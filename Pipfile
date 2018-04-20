@@ -15,6 +15,9 @@ flask-mail = "*"
 flask-moment = "*"
 flask-principal = "*"
 faker = "*"
+flask-pagedown = "*"
+markdown = "*"
+bleach = "*"
 
 [dev-packages]
 

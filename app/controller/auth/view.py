@@ -63,7 +63,7 @@ def login():
 								  identity=Identity(user.id))
 			if Permission(need('admin')).can():
 				flash('Hello, admin!')
-			return redirect(url_for('main.index'))
+			return redirect(request.args.get('next') or url_for('main.index'))
 		else:
 			flash('Your username/email or password is invalid.')
 			return redirect(url_for('auth.login'))
@@ -118,13 +118,11 @@ def resendMail():
 	return render_template('auth/unconfirmed.html')
 
 @auth.route('changepass', methods=['GET', 'POST'])
+@login_required
 def changepass():
 	'''
 	Change password, only when the user know the original password.
 	'''
-	if current_user.is_anonymous:
-		return redirect(url_for('auth.login'))
-
 	form = ChangePasswordForm()
 	if form.validate_on_submit():
 		user = current_user._get_current_object()
@@ -145,13 +143,11 @@ def changepass():
 	return render_template('auth/changepass.html', form=form)
 
 @auth.route('changemail', methods=['GET', 'POST'])
+@login_required
 def changemail():
 	'''
 	Change the email only when the user know his password.
 	'''
-	if current_user.is_anonymous:
-		return redirect(url_for('main.index'))
-
 	form = ChangeMailForm()
 	if form.validate_on_submit():
 		if current_user.check_password(form.password.data):
