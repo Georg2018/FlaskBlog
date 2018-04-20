@@ -3,12 +3,14 @@ A set of utility tools of managering the blog application.
 '''
 import os
 from flask_migrate import Migrate, migrate, upgrade
+from faker import Faker
 from app import create_app, db
 from app.models import User, Permission, permissions_dict
 from app import config
 
 app = create_app(os.environ.get('FLASK_CONFIG') or 'development')
 migrate = Migrate(app, db)
+fake = Faker()
 
 @app.shell_context_processor
 def make_context():
@@ -19,7 +21,7 @@ def make_context():
 	'''
 	from app import mail
 	return dict(app=app, migrate=migrate, db=db, User=User, Permission=Permission, mail=mail, \
-		create_app=create_app)
+		create_app=create_app, fake=fake)
 
 @app.cli.command()
 def create():
@@ -29,6 +31,29 @@ def create():
 	db.create_all()
 	Permission.insert_permissions(permissions_dict)
 	app.run()
+
+@app.cli.command()
+def fake_data():
+	'''Generat random data then insert to the database.'''
+	if app.config.get('MAIL_SUPPRESS_SEND') != True:
+		print('MAIL_SUPPRESS_SEND must be equal to True.')
+		return False
+
+	db.create_all()
+	Permission.insert_permissions(permissions_dict)
+	for a in range(100):
+		try:
+			email = fake.email()
+			username = fake.user_name()
+			user = User(email=email, username=username, password="test", confirmed=True, name=fake.name(), age=fake.random_int()%100, location=fake.address(), about_me=fake.bs())
+			db.session.add(user)
+			db.session.commit()
+			print('Generate "%s":"%s"'%(username, email))
+		except:
+			print('A failure...')
+			db.session.rollback()
+
+	return True
 
 @app.cli.command()
 def test():

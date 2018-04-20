@@ -1,7 +1,7 @@
 '''
 The main blueprint's view. Defined the route of the main blueprint and the related logic.
 '''
-from flask import render_template, url_for, redirect, abort, flash, request
+from flask import render_template, url_for, redirect, abort, flash, request, current_app
 from flask_login import current_user, login_required
 from flask_principal import Permission
 from .forms import UserInfoForm, AdminInfoEditForm
@@ -95,3 +95,11 @@ def account_setting():
 		return redirect(url_for('main.index'))
 
 	return render_template('main/account_setting.html')
+
+
+@main.route('/users/')
+def users():
+	page = request.args.get('page', 1, type=int)
+	pagination = User.query.order_by(User.member_since.desc()).paginate(page, per_page=current_app.config.get('FLASK_USER_PER_PAGE', 20), error_out=False)
+	users = pagination.items
+	return render_template('/main/users.html', users=users, pagination=pagination)

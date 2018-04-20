@@ -12,6 +12,9 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/main_style.css') }}" />
 
+	<style>
+		::-webkit-scrollbar {display:none}
+	</style>
 	{% block head %}
 	{% endblock %}
 </head>
@@ -49,6 +52,7 @@
 				<div class="navbar-nav">
 				{% block navbar_left %}
 					<a class="nav-item nav-link active" href="{{ url_for('main.index') }}">Home</a>
+					<a class="nav-item nav-link active" href="{{ url_for('main.users', page=1) }}">Users</a>
 				{% endblock %}
 				</div>
 				<div class="navbar-nav ml-auto">
@@ -91,7 +95,12 @@
 	</section>
 	</div>
 
+	{% block after_content %}
+	{% endblock %}
+
 	<footer class="footer">
+		{% block foot %}
+		{% endblock %}
 		<div class="container-fluid pl-0 pr-0 text-center text-white">
 			<div class="col">
 			<small class="text-muted">Copyright (c) 2018 Arianx</small>

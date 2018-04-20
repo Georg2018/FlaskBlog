@@ -9,7 +9,7 @@ class UserInfoForm(FlaskForm):
 	name = StringField('Name', validators=[Length(1,32), Optional()])
 	age = IntegerField('Age', validators=[NumberRange(1,200, "You must input a valid number."), Optional()])
 	location = StringField('Location', validators=[Length(1,64), Optional()])
-	about_me = TextField('About me', validators=[Length(1,1000), Optional()])
+	about_me = TextField('About me', validators=[Length(1,100), Optional()])
 	submit = SubmitField('Submit')
 
 class CheckboxField(SelectMultipleField):
@@ -25,7 +25,7 @@ class AdminInfoEditForm(FlaskForm):
 	name = StringField('Name', validators=[Length(1,32), Optional()])
 	age = IntegerField('Age', validators=[NumberRange(1,200, "You must input a valid number."), Optional()])
 	location = StringField('Location', validators=[Length(1,64), Optional()])
-	about_me = TextField('About me', validators=[Length(1,1000), Optional()	])
+	about_me = TextField('About me', validators=[Length(1,100), Optional()])
 	submit = SubmitField('Submit')
 
 	permission = CheckboxField('Permission')

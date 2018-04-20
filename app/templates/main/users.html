@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Uses
+{% endblock %}
+
+{% block content %}
+	{% for user in users %}
+		<div class="row justify-content-center">
+			<div class="card bg-light text-info border border-info col col-sm-12 col-md-10 col-lg-8 p-0 mb-3">
+				<div class="card-body">
+					<div class="row">
+						<div class="col col-3">
+							<a href="{{ url_for('main.user', username=user.username) }}">
+							<img class="float-left col-10 m-0 p-0 mt-4" src="{{ user.avatar_url }}"/>
+							</a>
+						</div>
+						<div class="col col-9 ml-auto">
+							<h3><strong>{{ user.username }}</strong></h3>
+							<p class="m-2 mt-3">Age: {{ user.age }}</p>
+							<p class="m-2">About me: <span class="lead">{{ user.about_me }}</span></p>
+							<a href="{{ url_for('main.user', username=user.username) }}" class="pull-right float-right">More</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+	<div class="row justify-content-center">
+	{{ macros.paginate(pagination, 'main.users') }}
+	</div>
+{% endblock %}
+
+{% block foot %}
+{% endblock %}
