@@ -3,7 +3,7 @@ Test auth function.
 '''
 import unittest
 from app import create_app, db
-from app.models import User, Permission, permissions_dict
+from app.models import User, Post, Permission, permissions_dict
 import time
 from datetime import datetime
 import hashlib
@@ -155,6 +155,32 @@ class PermissionModelTest(unittest.TestCase):
 		self.assertTrue(per1 in user1.permissions.all())
 		self.assertTrue(user1 in per2.users.all())
 		self.assertTrue(user2 in per1.users.all())
+
+class PostModelTest(unittest.TestCase):
+	'''Test the Post model.'''
+	@classmethod
+	def setUpClass(cls):
+		db.drop_all()
+
+	def setUp(self):
+		'''Build the test environment.'''
+		self.app = create_app('testing')
+		self.app_context = self.app.app_context()
+		self.app_context.push()
+		db.create_all()
+
+	def tearDown(self):
+		'''Clear resource.'''
+		self.app_context.pop()
+		db.session.remove()
+		db.drop_all()
+
+	def test_on_change_body(self):
+		'''Test the whether clear the tags when commit a article.'''
+		post = Post(title="test", body="<script></script><p></p>")
+
+		self.assertFalse('<script>' in post.html)
+		self.assertTrue('<p>' in post.html)
 
 if __name__ == '__main__':
 	unittest.main()

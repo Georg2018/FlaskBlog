@@ -18,7 +18,7 @@ def make_context():
 	'''
 	Add some key components to the line command context to make the debug easier.
 
-	:return: Return a dict which include some context information.
+	:return: Return a dict which include some context informations.
 	'''
 	from app import mail
 	return dict(app=app, migrate=migrate, db=db, User=User, Post=Post, Permission=Permission, mail=mail, \
@@ -27,7 +27,7 @@ def make_context():
 @app.cli.command()
 def create():
 	'''
-	Perform some necessary commands then run a app instance.
+	Performing some necessary commands then run a app instance.
 	'''
 	db.create_all()
 	Permission.insert_permissions(permissions_dict)
@@ -35,7 +35,7 @@ def create():
 
 @app.cli.command()
 def fake_user():
-	'''Generat random data then insert to the database.'''
+	'''Generating some random data then insert to the database.'''
 	if app.config.get('MAIL_SUPPRESS_SEND') != True:
 		print('MAIL_SUPPRESS_SEND must be equal to True.')
 		return False
@@ -58,6 +58,7 @@ def fake_user():
 
 @app.cli.command()
 def fake_post():
+	'''Generating some random data then insert to the database.'''
 	user_count = User.query.count()
 	for b in range(100):
 		try:
