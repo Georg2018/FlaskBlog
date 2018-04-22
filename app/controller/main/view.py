@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from flask_principal import Permission, UserNeed
 from .forms import UserInfoForm, AdminInfoEditForm, PostForm, CommentForm
 from . import main
-from .. import User, Post, Comment, db, require, need, Permission as model_permission
+from .. import User, Post, Comment, Follow, db, require, need, Permission as model_permission
 
 @main.route('/')
 def index():
@@ -237,3 +237,59 @@ def comment_edit(commentid):
 
 		form.body.data = comment.body
 		return render_template('/main/editcomment.html', form=form, comment=comment)
+
+@main.route('/follow/<userid>')
+@login_required
+@require('follow')
+def follow(userid):
+	if current_user.id == userid:
+		flash("You can't follow yourself.")
+		return redirect(url_for('main.index'))
+
+	if not current_user.is_followed_user(userid):
+		current_user.follow(userid)
+		flash('You have successfully followed the user.')
+		user = User.query.get(userid)
+		return redirect(url_for('main.user', username=user.username))
+	else:
+		flash("You have followed the user.")
+		return redirect('main.index')
+
+@main.route('/unfollow/<userid>')
+@login_required
+@require('follow')
+def unfollow(userid):
+	if current_user.id == userid:
+		flash("You can't unfollow yourself.")
+		return redirect(url_for('main.index'))
+
+	current_user.unfollow(userid)
+
+	flash("You have successfully unfollow the user.")
+	user = User.query.get(userid)
+	return redirect(url_for('main.user', username=user.username))
+
+@main.route('/user/<username>/followers')
+@login_required
+def followers(username):
+	user = User.query.filter_by(username=username).first_or_404()
+	page = request.args.get('page', 1, type=int)
+	pagination = user.followers.order_by(Follow.timestamp.desc()).paginate(page,
+																		current_app.config.get('FLASK_USER_PER_PAGE', 20),
+																		error_out=False)
+	followers = [item.follower for item in pagination.items]
+
+	return render_template('/main/followers.html', users=followers, user=user, pagination=pagination)
+
+@main.route('/user/<username>/followings')
+@login_required
+def followings(username):
+	user = User.query.filter_by(username=username).first_or_404()
+	page = request.args.get('page', 1, type=int)
+	pagination = user.followings.order_by(Follow.timestamp.desc()).paginate(page,
+																		current_app.config.get('FLASK_USER_PER_page', 20),
+																		error_out=False)
+	followings = [item.followed for item in pagination.items]
+
+	return render_template('/main/followings.html', users=followings, user=user, pagination=pagination)
+

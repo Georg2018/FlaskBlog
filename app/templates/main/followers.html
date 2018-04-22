@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Folloers
+{% endblock %}
+
+
+{% block content %}
+		<div class="row justify-content-center">
+			<div class="col col-sm-12 col-md-10 col-lg-8">
+	{% if not users %}
+				<p class="lead">It seems that this user has not be followed by anyone.</h3>
+	{% else %}
+				<p class="lead">{{ user.username }} was followed by these people.</h3>
+	{% endif %}
+			</div>
+		</div>
+	{% for user in users %}
+		<div class="row justify-content-center">
+			<div class="card bg-light text-info border border-info col col-sm-12 col-md-10 col-lg-8 p-0 mb-3">
+				<div class="card-body">
+					<div class="row">
+						<div class="col col-3">
+							<a href="{{ url_for('main.user', username=user.username) }}">
+							<img class="float-left col-10 m-0 p-0 mt-4" src="{{ user.avatar_url }}"/>
+							</a>
+						</div>
+						<div class="col col-9 ml-auto">
+							<h3><strong><a class="text-info" href="{{ url_for('main.user', username=user.username) }}">{{ user.username }}</a></strong></h3>
+							<p class="m-2 mt-3">Age: {{ user.age }}</p>
+							<p class="m-2">About me: <span class="lead">{{ user.about_me }}</span></p>
+							<p class="m-2">Article num: <span class="lead">{{ user.posts.count() }}</span></p>
+							<a href="{{ url_for('main.user', username=user.username) }}" class="pull-right float-right">More</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
+
+{% if pagination.pages == 1 or pagination.pages == 0 %}
+
+	{% else %}
+		<div class="row justify-content-center">
+			<ul class="pagination">
+				{% if pagination.has_prev %}
+					<li class="page-item">
+						<a class="page-link" href="{{ url_for('main.followers', username=user.username, page=1) }}">Previous</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#">Previous</a>
+					</li>
+				{% endif %}
+
+				{% for page in pagination.iter_pages() %}
+					{% if page == pagination.page %}
+						<li class="page-item active">
+							<a class="page-link" href="{{ url_for('main.followers', username=user.username, page=page) }}">{{ page }}</a>
+						</li>
+					{% elif not page %}
+						<li class="page-item disabled">
+							<a class="page-link" href="#">...</a>
+						</li>
+					{% else %}
+						<li class="page-item">
+							<a class="page-link" href="{{ url_for('main.followers', username=user.username, page=page) }}">{{ page }}</a>
+						</li>
+					{% endif %}
+				{% endfor %}
+
+				{% if pagination.has_next %}
+					<li class="page-item">
+						<a class="page-link" href="{{ url_for('main.followers', username=user.username, page=pagination.pages ) }}">Last</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#">Last</a>
+					</li>
+				{% endif %}
+			</ul>
+		</div>
+	{% endif %}
+{% endblock %}

@@ -6,7 +6,7 @@ from flask_migrate import Migrate, migrate, upgrade
 from faker import Faker
 from random import randint
 from app import create_app, db
-from app.models import User, Post, Comment, Permission, permissions_dict
+from app.models import User, Post, Comment, Follow, Permission, permissions_dict
 from app import config
 
 app = create_app(os.environ.get('FLASK_CONFIG') or 'development')
@@ -84,6 +84,21 @@ def fake_comment():
 		db.session.commit()
 
 	return True
+
+@app.cli.command()
+def fake_follow():
+	'''Generating some random following relationship.'''
+	user_count = User.query.count()
+	for b in range(500):
+		follower = User.query.offset(randint(0, user_count-1)).first()
+		followed = User.query.offset(randint(0, user_count-1)).first()
+
+		follow_ship = Follow(follower=follower, followed=followed)
+		db.session.add(follow_ship)
+		db.session.commit()
+
+	return True
+
 
 @app.cli.command()
 def test():

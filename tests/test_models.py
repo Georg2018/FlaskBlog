@@ -3,7 +3,7 @@ Test auth function.
 '''
 import unittest
 from app import create_app, db
-from app.models import User, Post, Permission, permissions_dict
+from app.models import User, Post, Follow, Permission, permissions_dict
 import time
 from datetime import datetime
 import hashlib
@@ -181,6 +181,47 @@ class PostModelTest(unittest.TestCase):
 
 		self.assertFalse('<script>' in post.html)
 		self.assertTrue('<p>' in post.html)
+
+class FollowModelTest(unittest.TestCase):
+	'''Test the Follow model.'''
+	@classmethod
+	def setUpClass(cls):
+		db.drop_all()
+
+	def setUp(self):
+		'''Build the test environment.'''
+		self.app = create_app('testing')
+		self.app_context = self.app.app_context()
+		self.app_context.push()
+		db.create_all()
+
+	def tearDown(self):
+		'''Clear resource.'''
+		self.app_context.pop()
+		db.session.remove()
+		db.drop_all()
+
+	def test_is_followed_user(self):
+		user1 = User(email="test@test1.com", username="test1", password="test")
+		user2 = User(email="test@test2.com", username="test2", password="test")
+		db.session.add(user1)
+		db.session.add(user2)
+		db.session.commit()
+
+		user1.follow(user2.id)
+
+		self.assertTrue(user1.is_followed_user(user2.id))
+
+	def test_is_followed_by(self):
+		user1 = User(email="test@test1.com", username="test1", password="test")
+		user2 = User(email="test@test2.com", username="test2", password="test")
+		db.session.add(user1)
+		db.session.add(user2)
+		db.session.commit()
+
+		user1.follow(user2.id)
+
+		self.assertTrue(user2.is_followed_by(user1.id))
 
 if __name__ == '__main__':
 	unittest.main()

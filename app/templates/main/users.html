@@ -6,6 +6,13 @@ Uses
 {% endblock %}
 
 {% block content %}
+	{% if not users %}
+		<div class="row justify-content-center">
+			<div class="col col-sm-12 col-md-10 col-lg-8">
+				<p class="lead">There seems to be no user registration yet.</h3>
+			</div>
+		</div>
+	{% endif %}
 	{% for user in users %}
 		<div class="row justify-content-center">
 			<div class="card bg-light text-info border border-info col col-sm-12 col-md-10 col-lg-8 p-0 mb-3">

@@ -39,6 +39,12 @@ class Permission(db.Model):
 			except:
 				db.session.rollback()
 
+class Follow(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	follower_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+	followed_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+	timestamp  = db.Column(db.DateTime, default=datetime.utcnow)
+
 class User(db.Model):
 	'''
 	Notice: Becauser the email is implemented by the property, you can\'t filter the
@@ -50,6 +56,15 @@ class User(db.Model):
 	password_hash = db.Column(db.String(128))
 	confirmed = db.Column(db.Boolean, default=False)
 	active = db.Column(db.Boolean, default=True)
+
+	name = db.Column(db.String(64))
+	age = db.Column(db.Integer())
+	location = db.Column(db.String(128))
+	about_me = db.Column(db.Text())
+	avatar_url = db.Column(db.String(128), default='')
+
+	member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+	last_since = db.Column(db.DateTime(), default=datetime.utcnow)
 
 	permissions = db.relationship(
 				'Permission',
@@ -67,14 +82,19 @@ class User(db.Model):
 				backref='user',
 				lazy='dynamic')
 
-	name = db.Column(db.String(64))
-	age = db.Column(db.Integer())
-	location = db.Column(db.String(128))
-	about_me = db.Column(db.Text())
-	avatar_url = db.Column(db.String(128), default='')
+	followers = db.relationship(
+				'Follow',
+				foreign_keys=[Follow.followed_id],
+				backref=db.backref('followed', lazy='joined'),
+				lazy='dynamic',
+				cascade='all, delete-orphan')
 
-	member_since = db.Column(db.DateTime(), default=datetime.utcnow)
-	last_since = db.Column(db.DateTime(), default=datetime.utcnow)
+	followings = db.relationship(
+				'Follow',
+				foreign_keys=[Follow.follower_id],
+				backref=db.backref('follower', lazy='joined'),
+				lazy='dynamic',
+				cascade='all, delete-orphan')
 
 	def __init__(self, *arg, **kwargs):
 		'''Add all of the default roles for the user when create a instance.'''
@@ -197,6 +217,32 @@ class User(db.Model):
 
 	def can(self, name):
 		if pm(Need('permission', name)).can():
+			return True
+		return False
+
+	def is_followed_user(self, userid):
+		if self.followings.filter_by(followed_id=userid).first() is not None:
+			return True
+		else:
+			return False
+
+	def is_followed_by(self, userid):
+		if self.followers.filter_by(follower_id=userid).first() is not None:
+			return True
+		else:
+			return False
+
+	def follow(self, userid):
+		follow_ship = Follow(followed_id=userid, follower_id=self.id)
+		db.session.add(follow_ship)
+		db.session.commit()
+		return True
+
+	def unfollow(self, userid):
+		follow_ship = Follow.query.filter_by(followed_id=userid, follower_id=self.id).first()
+		if follow_ship:
+			db.session.delete(follow_ship)
+			db.session.commit()
 			return True
 		return False
 

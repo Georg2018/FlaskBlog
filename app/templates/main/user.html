@@ -14,7 +14,17 @@ User
 					<div class="col">
 						<img class="float-right" src="{{ user.avatar_url }}" style="width:100px;height:100px"/>
 						<em><h2>{{ user.username }}</h2></em>
-						<p><strong>Article num: </strong>{{ user.posts.count() }}</p>
+						<p>
+							<button class="btn btn-info btn-sm mt-1" onclick="window.location.href='{{ url_for('main.user', username=user.username) }}'">Articles 
+								<span class="badge badge-light">{{ user.posts.count() }}</span>
+							</button>
+							<button class="btn btn-info btn-sm mt-1" onclick="window.location.href='{{ url_for('main.followers', username=user.username) }}'">followes 
+								<span class="badge badge-light">{{ user.followers.count() }}</span>
+							</button>
+							<button class="btn btn-info btn-sm mt-1" onclick="window.location.href='{{ url_for('main.followings', username=user.username) }}'">followings 
+								<span class="badge badge-light">{{ user.followings.count() }}</span>
+							</button>
+						</p>
 						<p><strong>Realname:</strong> {{ user.name }}</p>
 						<p><strong>Age:</strong> {{ user.age }}</p>
 						<p><strong>Location:</strong> {{ user.location }}</p>
@@ -24,6 +34,7 @@ User
 					<div class="col col-8">
 					<p><strong>About me:</strong> {{ user.about_me }}</p>
 					<p><strong>Member since: </strong>{{ moment(user.member_since).fromNow() }}</p>
+					<p><strong>Last login: </strong>{{ moment(user.last_since).fromNow() }}</p>
 					</div>
 					<div class="col ml-auto" style="max-width:200px">
 					{% if current_user.is_authenticated %}
@@ -38,8 +49,24 @@ User
 				</div>
 			</div>
 					<div class="card-footer pb-0 text-muted">
-					<p>Last login: {{ moment(user.last_since).fromNow() }}</p>
-				</div>
+					<p>
+						<span class="float-right">
+							{% if current_user.id != user.id %}
+								{% if current_user.is_followed_user(user.id) and current_user.is_followed_by(user.id) %}
+									<small class="text-muted mr-1">Focus on each other</small>
+								{% elif current_user.is_followed_by(user.id) %}
+									<small class="text-muted mr-1">be followed</small>
+								{% endif %}
+
+								{% if not current_user.is_followed_user(user.id) %}
+									<button type="button" class="btn btn-info btn-sm mb-2" onclick="window.location.href='{{ url_for('main.follow', userid=user.id) }}'">Follow</button>
+								{% else%}
+									<button type="button" class="btn btn-info btn-sm mb-2" onclick="window.location.href='{{ url_for('main.unfollow', userid=user.id) }}'">Unfollow</button>
+								{% endif %}
+							{% endif %}
+						</span>
+					</p>
+					</div>
 				</div>
 		</div>
 	</div>
