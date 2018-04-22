@@ -62,6 +62,11 @@ class User(db.Model):
 				backref='user',
 				lazy='dynamic')
 
+	comments = db.relationship(
+				'Comment',
+				backref='user',
+				lazy='dynamic')
+
 	name = db.Column(db.String(64))
 	age = db.Column(db.Integer())
 	location = db.Column(db.String(128))
@@ -222,6 +227,14 @@ class Post(db.Model):
 	title = db.Column(db.String(128), nullable=False, default="Unknow title", index=True)
 	body = db.Column(db.Text)
 	html = db.Column(db.Text)
+
+	comments = db.relationship(
+				'Comment',
+				backref='post',
+				lazy='dynamic')
+
+	disable = db.Column(db.Boolean, default=False)
+
 	timestamp = db.Column(db.DateTime(), default=datetime.utcnow)
 
 	user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
@@ -235,3 +248,14 @@ class Post(db.Model):
 						tags=allowed_tags, strip=True))
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
+
+class Comment(db.Model):
+	id = db.Column(db.Integer(), primary_key=True)
+	body = db.Column(db.String(512), nullable=False, index=True)
+
+	disable = db.Column(db.Boolean, default=False)
+
+	user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+	post_id = db.Column(db.Integer(), db.ForeignKey('post.id'))
+
+	timestamp = db.Column(db.DateTime(), default=datetime.utcnow)

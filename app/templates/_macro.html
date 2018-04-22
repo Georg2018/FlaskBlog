@@ -76,17 +76,24 @@
 					{% if loop.index%2==1 %}
 					<div class="col col-2">
 					{% else %}
-					<div class="col col-2 order-last">
+					<div class="col col-2 order-last pl-0 ml-0">
 					{% endif %}
-						<a class="text-info" href="{{ url_for('main.user', username=post.user.username) }}"><img class="col col-12" src="{{ post.user.avatar_url }}" style="min-width:50px"/></a>
+						<a class="text-info" href="{{ url_for('main.user', username=post.user.username) }}"><img class="col" src="{{ post.user.avatar_url }}" style="min-width:60px;"/></a>
 					</div>
 					<div class="col col-10">
 						<header class="row">
-							<div class="col col-sm-12 col-md-10">
+							<div class="col col-sm-12 col-md-10 mb-0 pb-0">
 								<h2><a class="text-info" href="{{ url_for('main.post', postid=post.id) }}">{{ post.title }}</a></h2>
+							<p class="text-muted mb-0" style="position:relative;top:-10px">
+								<small>
+									<a class="text-dark" href="{{ url_for('main.user', username=post.user.username) }}">{{ post.user.username }}</a>
+									<span class="ml-4">{{ moment(post.timestamp).format('MMMM Do YYYY, h:mm:ss a') }}</span>
+									<br />
+									<span class="">comments: {{ post.comments.count() }}</span>
+								</small>
+							</p>
 							</div>
 						</header>
-							<p class="text-muted mb-0"><small><a class="text-dark" href="{{ url_for('main.user', username=post.user.username) }}">{{ post.user.username }}</a><span class="ml-4">{{ moment(post.timestamp).format('MMMM Do YYYY, h:mm:ss a') }}</span></small></p>
 						<article class="row">
 							<div class="col">
 								{% if post.html %}
@@ -99,6 +106,30 @@
 					</div>
 				</div>
 			</div>
+		{% endfor %}
+	</div>
+</div>
+{% endmacro %}
+
+{% macro show_comments(comments, moment, current_user) %}
+<div class="row justify-content-center">
+	<div class="col">
+		{% for comment in comments %}
+		<div class="card mb-2">
+			<div class="card-body">
+				<img class="float-left mr-4" src="{{ comment.user.avatar_url }}" style="min-width:30px;max-width:50px"/>
+				<a class="text-dark" href="{{ url_for('main.user', username=comment.user.username) }}">{{ comment.user.username }}</a>
+				<p><small>{{ moment(comment.timestamp).format('MMMM Do YYYY, h:mm:ss a') }}</small></p>
+				<p>{{ comment.body }}</p>
+				<small class="text-muted float-right">{{ loop.index }}</small>
+			</div>
+			{% if comment.user.id == current_user.id or has_permission('admin') %}
+			<div class="card-footer">
+					<button type="button" class="btn btn-dark" onclick="window.location.href='{{ url_for('main.comment_remove', commentid=comment.id) }}'">Remove</button>
+					<button type="button" class="btn btn-info" onclick="window.location.href='{{ url_for('main.comment_edit', commentid=comment.id) }}'">Edit</button>
+			</div>
+			{% endif %}
+		</div>
 		{% endfor %}
 	</div>
 </div>

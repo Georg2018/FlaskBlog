@@ -4,14 +4,14 @@ The main blueprint's view. Defined the route of the main blueprint and the relat
 from flask import render_template, url_for, redirect, abort, flash, request, current_app
 from flask_login import current_user, login_required
 from flask_principal import Permission, UserNeed
-from .forms import UserInfoForm, AdminInfoEditForm, PostForm
+from .forms import UserInfoForm, AdminInfoEditForm, PostForm, CommentForm
 from . import main
-from .. import User, Post, db, require, need, Permission as model_permission
+from .. import User, Post, Comment, db, require, need, Permission as model_permission
 
 @main.route('/')
 def index():
 	page = request.args.get('page', 1, type=int)
-	pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page,
+	pagination = Post.query.filter_by(disable=False).order_by(Post.timestamp.desc()).paginate(page,
 																current_app.config.get('FLASK_POST_PER_PAGE', 20),
 																error_out=False)
 	posts = pagination.items
@@ -21,13 +21,14 @@ def index():
 def user(username):
 	user = User.query.filter_by(username=username).first_or_404()
 	page = request.args.get('page', 1, type=int)
-	pagination = user.posts.order_by(Post.timestamp.desc()).paginate(page,
+	pagination = user.posts.filter_by(disable=False).order_by(Post.timestamp.desc()).paginate(page,
 																current_app.config.get('FLASK_USERPOST_PER_PAGE', 20),
 																error_out=False)
 	posts = pagination.items
 	return render_template('main/user.html', user=user, posts=posts, pagination=pagination)
 
 @main.route('/editinfo', methods=['GET', 'POST'])
+@require('editinfo')
 @login_required
 def user_info_edit():
 	form = UserInfoForm()
@@ -52,8 +53,8 @@ def user_info_edit():
 	return render_template('main/editinfo.html', form=form)
 
 @main.route('/adminedit/<username>', methods=['GET', 'POST'])
-@login_required
 @require('admin')
+@login_required
 def admin_info_edit(username):
 	user = User.query.filter_by(username=username).first_or_404()
 	
@@ -112,8 +113,8 @@ def users():
 	return render_template('/main/users.html', users=users, pagination=pagination)
 
 @main.route('/postsubmit', methods=['GET', 'POST'])
-@login_required
 @require('post')
+@login_required
 def post_submit():
 	'''Submit a new post.'''
 	form = PostForm()
@@ -131,7 +132,6 @@ def post_submit():
 
 @main.route('/postedit/<postid>', methods=['GET', 'POST'])
 @login_required
-@require('post')
 def post_edit(postid):
 	'''Edit a exits article.'''
 	post = Post.query.get_or_404(postid)
@@ -155,6 +155,85 @@ def post_edit(postid):
 @main.route('/post/<postid>')
 def post(postid):
 	'''Show a post.'''
-	post = Post.query.get_or_404(postid)
+	post = Post.query.filter_by(disable=False, id=postid).first_or_404()
+	page = request.args.get('page', 1, type=int)
+	pagination = post.comments.filter_by(disable=False).order_by(Comment.timestamp.asc()).paginate(page,
+																			current_app.config.get('FLASK_COMMENT_PER_PAGE', 20),
+																			error_out=False)
+	comments = pagination.items
+	form = CommentForm()
 
-	return render_template('/main/post.html', post=post)
+	return render_template('/main/post.html', post=post, comments=comments, pagination=pagination, form=form)
+
+@main.route('/postremove/<postid>')
+@login_required
+def post_remove(postid):
+	'''Disable a post.'''
+
+	post = Post.query.filter_by(disable=False, id=postid).first_or_404()
+
+	if current_user.can('admin') or Permission(UserNeed(post.user.id)).can():
+		post.disable = True
+		db.session.add(post)
+		db.session.commit()
+
+		flash('The post "%s" has been removed'%(post.title))
+		return redirect(url_for('main.index'))
+	else:
+		abort(403)
+
+@main.route('/commentsubmit/<postid>', methods=['GET', 'POST'])
+@require('comment')
+@login_required
+def comment_submit(postid):
+	'''Submit a comment.'''
+	post = Post.query.filter_by(disable=False, id=postid).first_or_404()
+
+	form = CommentForm()
+	if form.validate_on_submit():
+		comment = Comment(body=form.body.data)
+		comment.post = post
+		comment.user = current_user._get_current_object()
+		db.session.add(comment)
+		db.session.commit()
+
+		page = post.comments.count()//current_app.config.get('FLASK_COMMET_PER_PAGE', 20)+1
+		flash('You have successfully add a comment.')
+		return redirect(url_for('main.post', postid=post.id, page=page))
+
+	return redirect(url_for('main.post', postid=post.id))
+
+@main.route('/commentremove/<commentid>')
+@login_required
+def comment_remove(commentid):
+	'''Remove a comment.'''
+	comment = Comment.query.filter_by(disable=False, id=commentid).first_or_404()
+
+	if current_user.can('admin') or Permission(UserNeed(comment.user.id)):
+		comment.disable = True
+		db.session.add(comment)
+		db.session.commit()
+
+		flash('You have successfully remove a comment.')
+		return redirect(url_for('main.post', postid=comment.post.id))
+	else:
+		abort(403)
+
+@main.route('/commentedit/<commentid>', methods=['GET', 'POST'])
+@login_required
+def comment_edit(commentid):
+	'''Edit a comment.'''
+	comment = Comment.query.get_or_404(commentid)
+
+	if Permission(UserNeed(comment.user.id)) or current_user.can('admin'):
+		form = CommentForm()
+
+		if form.validate_on_submit():
+			comment.body = form.body.data
+			db.session.add(comment)
+			db.session.commit()
+			flash('You have successfully update a comment.')
+			return redirect(url_for('main.post', postid=comment.post.id))
+
+		form.body.data = comment.body
+		return render_template('/main/editcomment.html', form=form, comment=comment)

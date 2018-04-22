@@ -20,6 +20,7 @@ Uses
 							<h3><strong><a class="text-info" href="{{ url_for('main.user', username=user.username) }}">{{ user.username }}</a></strong></h3>
 							<p class="m-2 mt-3">Age: {{ user.age }}</p>
 							<p class="m-2">About me: <span class="lead">{{ user.about_me }}</span></p>
+							<p class="m-2">Article num: <span class="lead">{{ user.posts.count() }}</span></p>
 							<a href="{{ url_for('main.user', username=user.username) }}" class="pull-right float-right">More</a>
 						</div>
 					</div>

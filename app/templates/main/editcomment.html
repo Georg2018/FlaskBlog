@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Comment edit
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 col-lg-8">
+		<form method="POST" action="{{ url_for('main.comment_edit', commentid=comment.id) }}">
+			{{ form.hidden_tag() }}
+			{{ macros.field(form.body) }}
+			{{ form.submit(class="form-control btn btn-info") }}
+		</form>
+	</div>
+</div>
+{% endblock %}

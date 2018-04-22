@@ -12,7 +12,9 @@
 {% else %}
 	Hello, Stranger!
 {% endif %}
+{% if current_user.is_authenticated %}
 	Click <a href="{{ url_for('main.post_submit') }}">here</a> to post a new article, or look at another posts below!
+{% endif %}
 	</h3>
 </div>
 {{ macros.show_posts(posts, moment) }}

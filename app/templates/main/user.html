@@ -11,15 +11,13 @@ User
 			<div class="card border-info bg-light text-info">
 				<div class="card-body">
 				<div class="row">
-					<div class="col col-9">
+					<div class="col">
+						<img class="float-right" src="{{ user.avatar_url }}" style="width:100px;height:100px"/>
 						<em><h2>{{ user.username }}</h2></em>
 						<p><strong>Article num: </strong>{{ user.posts.count() }}</p>
 						<p><strong>Realname:</strong> {{ user.name }}</p>
 						<p><strong>Age:</strong> {{ user.age }}</p>
 						<p><strong>Location:</strong> {{ user.location }}</p>
-					</div>
-					<div class="col col-3">
-						<img class="float-right" src="{{ user.avatar_url }}" style="width:100px;height:100px"/>
 					</div>
 				</div>
 				<div class="row">
@@ -27,7 +25,7 @@ User
 					<p><strong>About me:</strong> {{ user.about_me }}</p>
 					<p><strong>Member since: </strong>{{ moment(user.member_since).fromNow() }}</p>
 					</div>
-					<div class="col col-3 ml-auto">
+					<div class="col ml-auto" style="max-width:200px">
 					{% if current_user.is_authenticated %}
 						{% if current_user.id == user.id %}
 							<a class="float-right btn btn-info mt-3" href="{{ url_for('main.user_info_edit') }}" style="width:120%">edit my profile</a>
@@ -46,7 +44,49 @@ User
 		</div>
 	</div>
 {{ macros.show_posts(posts, moment) }}
-{{ macros.paginate(pagination, 'main.user') }}
+{% if pagination.pages == 1 or pagination.pages == 0 %}
+
+	{% else %}
+		<div class="row justify-content-center">
+			<ul class="pagination">
+				{% if pagination.has_prev %}
+					<li class="page-item">
+						<a class="page-link" href="{{ url_for('main.user', username=user.username, page=1) }}">Previous</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#">Previous</a>
+					</li>
+				{% endif %}
+
+				{% for page in pagination.iter_pages() %}
+					{% if page == pagination.page %}
+						<li class="page-item active">
+							<a class="page-link" href="{{ url_for('main.user', username=user.username, page=page) }}">{{ page }}</a>
+						</li>
+					{% elif not page %}
+						<li class="page-item disabled">
+							<a class="page-link" href="#">...</a>
+						</li>
+					{% else %}
+						<li class="page-item">
+							<a class="page-link" href="{{ url_for('main.user', username=user.username, page=page) }}">{{ page }}</a>
+						</li>
+					{% endif %}
+				{% endfor %}
+
+				{% if pagination.has_next %}
+					<li class="page-item">
+						<a class="page-link" href="{{ url_for('main.user', username=user.username, page=pagination.pages ) }}">Last</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#">Last</a>
+					</li>
+				{% endif %}
+			</ul>
+		</div>
+	{% endif %}
 {% endblock %}
 
 {% block js %}
