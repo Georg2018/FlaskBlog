@@ -1,7 +1,7 @@
 '''
 The main blueprint's view. Defined the route of the main blueprint and the related logic.
 '''
-from flask import render_template, url_for, redirect, abort, flash, request, current_app
+from flask import render_template, url_for, redirect, abort, flash, request, current_app, make_response
 from flask_login import current_user, login_required
 from flask_principal import Permission, UserNeed
 from .forms import UserInfoForm, AdminInfoEditForm, PostForm, CommentForm
@@ -11,11 +11,18 @@ from .. import User, Post, Comment, Follow, db, require, need, Permission as mod
 @main.route('/')
 def index():
 	page = request.args.get('page', 1, type=int)
-	pagination = Post.query.filter_by(disable=False).order_by(Post.timestamp.desc()).paginate(page,
-																current_app.config.get('FLASK_POST_PER_PAGE', 20),
-																error_out=False)
+	show_followed = bool(request.cookies.get('show_followed', ''))
+
+	if show_followed and current_user.is_authenticated:
+		query = current_user.followed_posts
+	else:
+		query = Post.query.filter_by(disable=False).order_by(Post.timestamp.desc())
+
+	pagination = query.paginate(page,\
+								current_app.config.get('FLASK_POST_PER_PAGE', 20),\
+								error_out=False)
 	posts = pagination.items
-	return render_template('main/index.html', posts=posts, pagination=pagination)
+	return render_template('main/index.html', posts=posts, pagination=pagination, show_followed=show_followed)
 
 @main.route('/user/<username>')
 def user(username):
@@ -293,3 +300,15 @@ def followings(username):
 
 	return render_template('/main/followings.html', users=followings, user=user, pagination=pagination)
 
+@main.route('/show_all')
+def show_all():
+	resp = make_response(redirect(url_for('main.index')))
+	resp.set_cookie('show_followed', '', max_age=60*60*24*30)
+	return resp
+
+@main.route('/show_followed')
+@login_required
+def show_followed():
+	resp = make_response(redirect(url_for('main.index')))
+	resp.set_cookie('show_followed', '1', max_age=60*60*24*30)
+	return resp

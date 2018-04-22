@@ -2,7 +2,7 @@
 Auth blueprint's view. Defined the route of the auth blueprint and the related logic.
 '''
 import re
-from flask import render_template, url_for, redirect, flash, request, current_app
+from flask import render_template, url_for, redirect, flash, request, current_app, make_response
 from flask_login import current_user, login_required, login_user, logout_user
 from flask_principal import Identity, AnonymousIdentity, identity_changed, Permission
 from .forms import RegisterForm, LoginForm, ChangePasswordForm, ChangeMailForm, \
@@ -79,7 +79,9 @@ def logout():
 	logout_user()
 	identity_changed.send(current_app._get_current_object(),
 						  identity=AnonymousIdentity())
-	return redirect(url_for('main.index'))
+	resp = make_response(redirect(url_for('main.index')))
+	resp.set_cookie('show_followed', '', 60*60*24*30)
+	return resp
 
 @auth.route('confirmed')
 @auth.route('confirmed/<token>')

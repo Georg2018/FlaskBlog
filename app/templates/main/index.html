@@ -5,7 +5,7 @@
 
 {% block content %}
 {{ super() }} 
-<div class="row ml-2">
+<div class="row ml-2 justify-content-center">
 	<h3 class="lead">
 {% if current_user.is_authenticated %}
 	Hello, {{ current_user.username }}!
@@ -17,6 +17,16 @@
 {% endif %}
 	</h3>
 </div>
+<ul class="nav nav-tabs mb-3">
+	<li class="nav-item">
+		<a class="nav-link {% if not show_followed %}active{% endif %}" href="{{ 
+		url_for('main.show_all') }}">show all</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link {% if show_followed %}active{% endif %}" href="{{ 
+		url_for('main.show_followed') }}">show followed</a>
+	</li>
+</ul>
 {{ macros.show_posts(posts, moment) }}
 {{ macros.paginate(pagination, 'main.index') }}
 {% endblock %}

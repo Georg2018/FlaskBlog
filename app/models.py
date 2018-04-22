@@ -246,6 +246,13 @@ class User(db.Model):
 			return True
 		return False
 
+	@property
+	def followed_posts(self):
+		posts = Post.query.join(Follow, Follow.followed_id == Post.user_id)\
+							.filter(Follow.follower_id == self.id)\
+							.order_by(Post.timestamp.desc())
+		return posts
+
 class AnonymousUser():
 	@property
 	def is_authenticated(self):

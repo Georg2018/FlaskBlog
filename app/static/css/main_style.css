@@ -39,3 +39,8 @@ footer {
 	-ms-transform: rotateZ(360deg);
 	transform: rotateZ(360deg);
 }
+
+.flask-pagedown-preview {
+	border-color:#66ccff;
+	border:1px;
+}
