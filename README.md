@@ -21,7 +21,7 @@ Simple Usage:
 
 ---
 Generate Fake Data:
-Once you done the above work, you can use `flask fake_user`, `flask fake_post`, `flask fake_comment` to generate the fake data to test.
+1. Once you done the above work, you can use `flask fake_user`, `flask fake_post`, `flask fake_comment` to generate the fake data to test.
 
 ---
 Previewing the interface:

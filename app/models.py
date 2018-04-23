@@ -203,6 +203,31 @@ class User(db.Model):
 		else:
 			return False
 
+	def generate_api_token(self, expiration=300):
+		serializer = Serializer(current_app.config['SECRET_KEY'], expiration)
+		return serializer.dumps({'user_id':self.id}).decode()
+
+	@staticmethod
+	def verify_api_token(token):
+		serializer = Serializer(current_app.config['SECRET_KEY'])
+
+		try:
+			user_id = serializer.loads(token)['user_id']
+		except BadSignature:
+			return False
+		except SignatureExpired:
+			return False
+
+		try:
+			user = User.query.get(user_id)
+		except:
+			return False
+
+		if user is not None:
+			return user
+		else:
+			return False
+
 	def generate_gravatar_url(self, size=150, default='identicon', rating='x'):
 		url = 'http://www.gravatar.com/avatar'
 		mail_hash = hashlib.md5(self._email.encode('utf-8')).hexdigest()
