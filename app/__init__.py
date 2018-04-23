@@ -11,7 +11,6 @@ from flask_moment import Moment
 from flask_principal import Principal, Permission, identity_loaded, UserNeed
 from flask_pagedown import PageDown
 from .config import config
-from .principal import need
 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
@@ -56,6 +55,7 @@ def create_app(config_name):
 			for pm in current_user.permissions.all():
 				identity.provides.add(need(pm.name))
 
+	from .extensions import need
 	def has_permission(name):
 		'''Used by template to judge whether the user has some permissions.'''
 		if Permission(need(name)).can():
