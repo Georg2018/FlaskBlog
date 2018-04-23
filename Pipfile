@@ -18,6 +18,8 @@ faker = "*"
 flask-pagedown = "*"
 markdown = "*"
 bleach = "*"
+flask-restful = "*"
+flask-httpauth = "*"
 
 [dev-packages]
 
