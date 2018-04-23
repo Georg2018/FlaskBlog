@@ -43,7 +43,7 @@ def create_app(config_name):
 	app.register_blueprint(main_blueprint, template_folder='../templates/main')
 	from .controller import auth as auth_blueprint
 	app.register_blueprint(auth_blueprint, template_folder='../templates/auth')
-	from .contrller import api_bp as api_blueprint
+	from .controller import api_bp as api_blueprint
 	app.register_blueprint(api_blueprint)
 
 	@identity_loaded.connect_via(app)

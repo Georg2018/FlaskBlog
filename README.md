@@ -1,9 +1,31 @@
 title: A Personal Blog Implemented by Flask
 ---
-## A Example Blog Implemented by Flask
+## A Simple Example Blog Implemented by Flask
 
-As you see, this is a simple personal example Blog that implemented by Flask web framework. Though the reason why I wrote this Blog is to imporve myself's understanding of Flask, I hope this blog will also help other who want to improve thereselves. So I have added some detailed comments to the source code for this Blog when I make it. I sincerely hope that it will help you.
+This is a simple personal Blog that implemented by Flask web framework. It has some basic features of a blog like loggin, logout, follow, permission control, avatar, etc. 
 
-Of course, I also hope you can make some Suggestions to this blog. I always hope to work with you.
+I also sincerely hope that it would help you.
 
-*Notice:When you see the page, the blog may not be finished yet. I'll continue to add functionality later.*
+The blog hasn't been completed yet. I will add more functionalities in the future.
+
+Todo:
+
+- [ ] Tags.
+- [ ] Api.
+- [ ] Third party login.
+- [ ] Search.
+
+---
+Simple Usage:
+1. Use the `pipenv install` or `pip install -r requirements.txt` command to install the dependencies.
+2. Add a environment variable named `FLASK_APP` which value is equal to this blog's directory path.
+3. Execute the `flask run` command in your command line environment.
+---
+Generate Fake Data:
+Once you done the above work, you can use `flask fake_user`, `flask fake_post`, `flask fake_comment` to generate the fake data to test.
+---
+Previewing the interface:
+
+![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-23/83942832.jpg)
+
+![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-23/62023848.jpg)

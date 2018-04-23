@@ -6,3 +6,4 @@ from ..extensions import send_mail, require, need
 
 from .main import main
 from .auth import auth
+from .api import api_bp
