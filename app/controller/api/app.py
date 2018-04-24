@@ -17,13 +17,14 @@ api.add_resource(
     Followings, "/user/<string:username>/followings", endpoint="followings"
 )
 
-from .resources.post import aPost, Posts, FollowedPosts, PostComments
+from .resources.post import aPost, Posts, FollowedPosts, UserPosts
 
-api.add_resource(aPost, "/post/<int:postid>", endpoint="post")
+api.add_resource(aPost, "/post", "/post/<int:postid>", endpoint="post")
 api.add_resource(Posts, "/posts", endpoint="posts")
 api.add_resource(FollowedPosts, "/followedposts", endpoint="followd_posts")
+api.add_resource(UserPosts, "/user/<string:username>/posts", endpoint="user_posts")
+
+from .resources.comment import aComment, PostComments
+
 api.add_resource(PostComments, "/post/<int:postid>/comments", endpoint="post_comments")
-
-from .resources.comment import aComment
-
 api.add_resource(aComment, "/comment/<int:commentid>", endpoint="comment")

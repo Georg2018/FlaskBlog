@@ -17,6 +17,7 @@ getUserField = {
         "avatar_url": fields.String,
         "followers": fields.Url("api.followers", absolute=True),
         "followings": fields.Url("api.followings", absolute=True),
+        "posts": fields.Url("api.user_posts", absolute=True)
     },
 }
 

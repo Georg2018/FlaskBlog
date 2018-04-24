@@ -9,7 +9,10 @@ getPostField = {
     "comment_num": Num(attribute="comments"),
     "body": fields.String,
     "html": fields.String,
-    "url": {"author": fields.Url("api.user", absolute=True), "comment": fields.String},
+    "url": {
+        "author": fields.Url("api.user", absolute=True),
+        "comment": fields.Url("api.post_comments", absolute=True),
+        },
 }
 
 getPostsField = {
