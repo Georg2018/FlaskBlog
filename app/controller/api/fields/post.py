@@ -12,7 +12,7 @@ getPostField = {
     "url": {
         "author": fields.Url("api.user", absolute=True),
         "comment": fields.Url("api.post_comments", absolute=True),
-        },
+    },
 }
 
 getPostsField = {

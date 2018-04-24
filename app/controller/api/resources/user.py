@@ -9,9 +9,7 @@ from .. import User, Post, Comment, Follow, db
 
 
 class aUser(Resource):
-    method_decorators = {
-        "post": [can('editinfo'), auth.login_required],
-    }
+    method_decorators = {"post": [can("editinfo"), auth.login_required]}
 
     @marshal_with(getUserField)
     def get(self, username):
@@ -22,14 +20,14 @@ class aUser(Resource):
 
     @marshal_with(getUserField)
     def post(self, username):
-        user =User.query.filter_by(username=username).first()
+        user = User.query.filter_by(username=username).first()
         if not user:
             abort(404, message="User not found.")
         form = post_aUser_parser.parse_args()
-        user.name = form['name']
-        user.age = form['age']
-        user.location = form['location']
-        user.about_me = form['about_me']
+        user.name = form["name"]
+        user.age = form["age"]
+        user.location = form["location"]
+        user.about_me = form["about_me"]
         db.session.add(user)
         db.session.commit()
         return user

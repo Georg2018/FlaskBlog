@@ -2,16 +2,14 @@ from flask import current_app, g
 from flask_restful import Resource, marshal_with, abort
 from ..common.parsers import page_parser, post_aPost_parser
 from ..common.auth import auth, can
-from ..fields.post import (
-    getPostField, getPostsField, getFollowedPostsField
-)
+from ..fields.post import getPostField, getPostsField, getFollowedPostsField
 from .. import User, Post as Post, Comment, Follow, db
 
 
 class aPost(Resource):
     method_decorators = {
-        "put": [can('post'), auth.login_required],
-        "post": [can('post'), auth.login_required]
+        "put": [can("post"), auth.login_required],
+        "post": [can("post"), auth.login_required],
     }
 
     @marshal_with(getPostField)
@@ -26,7 +24,7 @@ class aPost(Resource):
     @marshal_with(getPostField)
     def put(self):
         form = post_aPost_parser.parse_args()
-        post = Post(title=form['title'], body=form['body'])
+        post = Post(title=form["title"], body=form["body"])
         post.user = g.current_user
         db.session.add(post)
         db.session.commit()
@@ -83,7 +81,6 @@ class UserPosts(Resource):
             abort(404, message="User not found.")
         page = page_parser.parse_args()["page"]
         pagination = user.posts.order_by(Post.timestamp.desc()).paginate(
-            page,
-            current_app.config.get('FLASK_PER_POST_PAGE', 20),
-            error_out=False)
+            page, current_app.config.get("FLASK_PER_POST_PAGE", 20), error_out=False
+        )
         return pagination

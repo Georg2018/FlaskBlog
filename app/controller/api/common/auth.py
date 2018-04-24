@@ -53,8 +53,12 @@ def can(name):
     def decorator(func, *args, **kwargs):
 
         def wraped(*args, **kwargs):
-            if (g.current_user.permissions.filter_by(name=name).first() is not None
-                or g.current_user.permissions.filter_by(name="admin").first() is not None):
+            if (
+                g.current_user.permissions.filter_by(name=name).first() is not None
+                or g.current_user.permissions.filter_by(
+                    name="admin"
+                ).first() is not None
+            ):
                 return func(*args, **kwargs)
 
             else:

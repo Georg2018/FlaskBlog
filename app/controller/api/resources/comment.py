@@ -7,9 +7,7 @@ from .. import User, Post, Follow, Comment, db
 
 
 class aComment(Resource):
-    method_decorators = {
-        "post": [can('comment'), auth.login_required]
-    }
+    method_decorators = {"post": [can("comment"), auth.login_required]}
 
     @marshal_with(getCommentField)
     def get(self, commentid):
@@ -35,9 +33,7 @@ class aComment(Resource):
 
 
 class PostComments(Resource):
-    method_decorators = {
-        "put": [can('comment'), auth.login_required]
-    }
+    method_decorators = {"put": [can("comment"), auth.login_required]}
 
     @marshal_with(getPostCommentsField)
     def get(self, postid):
@@ -62,4 +58,3 @@ class PostComments(Resource):
         comment.username = g.current_user.username
         comment.postid = post.id
         return comment
-
