@@ -16,6 +16,7 @@ Edit post
 		{% endif %}
 			{{ form.hidden_tag() }}
 			{{ macros.field(form.title) }}
+			{{ macros.field(form.tags) }}
 			<div class="form-group">
 				{{ form.body.label }}
 				{% if form.body.errors %}

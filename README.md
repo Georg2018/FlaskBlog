@@ -8,16 +8,16 @@ The blog hasn't been completed yet. I will add more functionalities in the futur
 
 Todo:
 
-- [ ] Tags.
+- [x] Tags.
 - [x] Api.
 - [ ] Third party login.
-- [ ] Search.
+- [x] Search.
 
 ---
 Simple Usage:
 1. Use the `pipenv install` or `pip install -r requirements.txt` command to install the dependencies.
 2. Add a environment variable named `FLASK_APP` which value is equal to this blog's directory path.
-3. Execute the `flask run` command in your command line environment.
+3. Execute the `flask create` command in your command line environment.
 
 ---
 Generate Fake Data:
@@ -26,4 +26,4 @@ Generate Fake Data:
 ---
 Previewing the interface:
 
-![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-23/83942832.jpg)
+![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-26/24559028.jpg)

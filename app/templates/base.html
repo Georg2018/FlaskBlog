@@ -54,12 +54,13 @@
 				{% block navbar_left %}
 					<a class="nav-item nav-link active" href="{{ url_for('main.index') }}">Home</a>
 					<a class="nav-item nav-link active" href="{{ url_for('main.users', page=1) }}">Users</a>
+					<a class="nav-item nav-link active" href="{{ url_for('main.all_tags', page=1) }}">Tags</a>
 				{% endblock %}
 				</div>
 				<div class="navbar-nav ml-auto">
-					<form class="form-inline" method="GET" action="{{ url_for('main.search') }}">
-						<input type="text" class="form-control" name="text" />
-						<button type="submit" class="btn btn-info btn-sm ml-2 mr-21">Search</button>
+					<form class="form-inline " method="GET" action="{{ url_for('main.search') }}">
+						<input type="text" class="form-control col col-sm-3 col-md-9" name="text" />
+						<button type="submit" class="btn btn-info btn-sm ml-2 mt-1">Search</button>
 					</form>
 				{% block navbar_right %}
 				{% if current_user.is_authenticated %}

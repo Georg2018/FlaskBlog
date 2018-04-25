@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Tags
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 col-lg-8">
+		<p class="lead">Top tag:</p>
+		{% for tag in tags %}
+			<button type="button" class="btn btn-info btn-outline-info m-2" onclick="window.location.href='{{ url_for('main.tag', name=tag[0].name) }}'">{{ tag[0].name }}<span class="badge border border-grey ml-3">{{ tag[1] }}</span></button>
+		{% endfor %}
+	<div class="mr-5 pr-5 mt-4">
+	{{ macros.paginate(pagination, 'main.all_tags') }}
+	</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.lang('en') }}
+{% endblock %}

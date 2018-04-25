@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Tag
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 col-lg-8">
+		{% if posts %}
+			<p class="lead">The tag "{{ name }}" contains the following articles:</p>
+		{% else %}
+			<p class="lead">It seems that there is no articles in the tag {{ name }}.</p>
+		{% endif %}
+	</div>
+</div>
+
+{{ macros.show_posts(posts, moment) }}
+
+{% if pagination.pages == 1 or pagination.pages == 0 %}
+
+	{% else %}
+		<div class="row justify-content-center">
+			<ul class="pagination">
+				{% if pagination.has_prev %}
+					<li class="page-item">
+						<a class="page-link" href="{{ url_for("main.tag", name=name, page=1) }}">Previous</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#">Previous</a>
+					</li>
+				{% endif %}
+
+				{% for page in pagination.iter_pages() %}
+					{% if page == pagination.page %}
+						<li class="page-item active">
+							<a class="page-link" href="{{ url_for("main.tag", name=name, page=page) }}">{{ page }}</a>
+						</li>
+					{% elif not page %}
+						<li class="page-item disabled">
+							<a class="page-link" href="#">...</a>
+						</li>
+					{% else %}
+						<li class="page-item">
+							<a class="page-link" href="{{ url_for("main.tag", name=name, page=page) }}">{{ page }}</a>
+						</li>
+					{% endif %}
+				{% endfor %}
+
+				{% if pagination.has_next %}
+					<li class="page-item">
+						<a class="page-link" href="{{ url_for("main.tag", name=name, page=pagination.pages ) }}">Last</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#">Last</a>
+					</li>
+				{% endif %}
+			</ul>
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.lang('en') }}
+{% endblock %}

@@ -80,14 +80,24 @@ class AdminInfoEditForm(FlaskForm):
 
 class PostForm(FlaskForm):
     title = StringField("Title", validators=[Length(1, 128)])
+    tags = StringField("Tags", validators=[Length(1, 128), Optional()])
     body = PageDownField("Input your mind", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+    def validate_tags(self, field):
+        import re
+
+        if re.search(r"[^\w ]+", field.data):
+            raise ValidationError(
+                "Tags must be separated by Spaces and  can only contain letters."
+            )
 
 
 class CommentForm(FlaskForm):
     body = StringField("Comment", validators=[Length(1, 526), DataRequired()])
     submit = SubmitField("Submit")
 
+
 class SearchForm(FlaskForm):
-    text = StringField('Search', validators=[Length(1, 256), DataRequired()])
+    text = StringField("Search", validators=[Length(1, 256), DataRequired()])
     submit = SubmitField("submit")

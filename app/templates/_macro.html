@@ -103,6 +103,12 @@
 								{% endif %}
 							</div>
 						</article>
+						<div class="tags">
+							<hr />
+							{% for tag in post.tags[:3] %}
+								<button class="btn btn-light btn-sm m-2" onclick="window.location.href='{{ url_for('main.tag', name=tag.name) }}'">{{ tag.name }}</button>
+							{% endfor %}
+						</div>
 					</div>
 				</div>
 			</div>

@@ -9,7 +9,7 @@ from flask_migrate import Migrate, migrate, upgrade
 from faker import Faker
 from random import randint
 from app import create_app, db, search
-from app.models import User, Post, Comment, Follow, Permission, permissions_dict
+from app.models import User, Post, Comment, Follow, Permission, Tag, permissions_dict
 from app import config
 
 app = create_app(os.environ.get("FLASK_CONFIG") or "development")
@@ -34,10 +34,11 @@ def make_context():
         Comment=Comment,
         Permission=Permission,
         Follow=Follow,
+        Tag=Tag,
         mail=mail,
         create_app=create_app,
         fake=fake,
-        search=search
+        search=search,
     )
 
 
@@ -48,6 +49,7 @@ def create():
 	"""
     db.create_all()
     Permission.insert_permissions(permissions_dict)
+    # search.create_index(update=True)
     app.run()
 
 
@@ -128,6 +130,27 @@ def fake_follow():
         db.session.commit()
 
     return True
+
+
+@app.cli.command()
+def fake_tag():
+    """Generating some random tags."""
+    for b in range(100):
+        try:
+            tag = Tag(name=fake.word())
+            db.session.add(tag)
+            db.session.commit()
+        except:
+            db.session.rollback()
+
+    tag_count = Tag.query.count()
+    for post in Post.query.all():
+        count = randint(0, 30)
+        for a in range(count):
+            tag = Tag.query.offset(randint(0, tag_count - 1)).first()
+            post.tags.append(tag)
+            db.session.add(post)
+            db.session.commit()
 
 
 @app.cli.command()

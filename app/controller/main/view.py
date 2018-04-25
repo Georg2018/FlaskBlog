@@ -13,10 +13,20 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from flask_principal import Permission, UserNeed
+from sqlalchemy import func
 from .forms import UserInfoForm, AdminInfoEditForm, PostForm, CommentForm, SearchForm
 from . import main
 from .. import (
-    User, Post, Comment, Follow, db, require, need, Permission as model_permission
+    User,
+    Post,
+    Comment,
+    Follow,
+    Tag,
+    tags,
+    db,
+    require,
+    need,
+    Permission as model_permission,
 )
 
 
@@ -170,9 +180,22 @@ def post_submit():
     if form.validate_on_submit():
         user = current_user._get_current_object()
         post = Post(title=form.title.data, body=form.body.data, user=user)
+        tags = list(set(form.tags.data.split()))
         db.session.add(user)
         db.session.add(post)
         db.session.commit()
+
+        for tagname in tags:
+            tag = Tag.query.filter_by(name=tagname).first()
+            if tag:
+                post.tags.append(tag)
+                db.session.add(post)
+                db.session.commit()
+            else:
+                tag = Tag(name=tagname)
+                post.tags.append(tag)
+                db.session.add(post)
+                db.session.commit()
 
         flash("You have successfully submited a article.")
         return redirect(url_for("main.post", postid=post.id))
@@ -193,11 +216,25 @@ def post_edit(postid):
             db.session.add(post)
             db.session.commit()
 
+            tags = list(set(form.tags.data.split()))
+            post.tags = []
+            for tagname in tags:
+                tag = Tag.query.filter_by(name=tagname).first()
+                if tag:
+                    post.tags.append(tag)
+                else:
+                    tag = Tag(name=tagname)
+                    post.tags.append(tag)
+
+            db.session.add(post)
+            db.session.commit()
+
             flash("You have successfully updated a article.")
             return redirect(url_for("main.post", postid=post.id))
 
         form.title.data = post.title
         form.body.data = post.body
+        form.tags.data = " ".join([tag.name for tag in post.tags])
         return render_template("/main/editpost.html", form=form, postid=post.id)
 
     else:
@@ -385,16 +422,55 @@ def show_followed():
     resp.set_cookie("show_followed", "1", max_age=60 * 60 * 24 * 30)
     return resp
 
-@main.route('/search')
+
+@main.route("/search")
 def search():
-    text = request.args.get('text', '', type=str)
-    if len(text) == 0 or len(text)>128:
-        return redirect(url_for('main.index'))
+    text = request.args.get("text", "", type=str)
+    if len(text) == 0 or len(text) > 128:
+        return redirect(url_for("main.index"))
 
     page = request.args.get("page", 1, type=int)
-    pagination = Post.query.filter_by(disable=False).msearch(text, fields=['html', 'title']).order_by(Post.timestamp.desc()).paginate(page,
-        current_app.config.get('FLASK_POST_PER_PAGE', 20),
-        error_out=False)
+    pagination = Post.query.filter_by(disable=False).msearch(
+        text, fields=["html", "title"]
+    ).order_by(
+        Post.timestamp.desc()
+    ).paginate(
+        page, current_app.config.get("FLASK_POST_PER_PAGE", 20), error_out=False
+    )
     posts = pagination.items
-    return render_template('main/search.html', posts=posts, pagination=pagination, text=text)
+    return render_template(
+        "main/search.html", posts=posts, pagination=pagination, text=text
+    )
 
+
+@main.route("/tag/<name>")
+def tag(name):
+    tag = Tag.query.filter_by(name=name).first_or_404()
+    page = request.args.get("page", 1, type=int)
+    pagination = tag.posts.filter_by(disable=False).order_by(
+        Post.timestamp.desc()
+    ).paginate(
+        page, current_app.config.get("FLASK_POST_PER_PAGE", 20), error_out=False
+    )
+    posts = pagination.items
+
+    return render_template(
+        "main/tag.html", posts=posts, pagination=pagination, name=name
+    )
+
+
+@main.route("/tags")
+def all_tags():
+    page = request.args.get("page", 1, type=int)
+    pagination = db.session.query(Tag, func.count(tags.c.post_id).label("total")).join(
+        tags
+    ).group_by(
+        Tag
+    ).order_by(
+        "total DESC"
+    ).paginate(
+        page, current_app.config.get("FLASK_TAG_PER_PAGE", 50), error_out=False
+    )
+    return render_template(
+        "main/tags.html", tags=pagination.items, pagination=pagination
+    )

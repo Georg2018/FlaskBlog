@@ -10,6 +10,12 @@ from itsdangerous import (
 from markdown import markdown
 import bleach
 
+tags = db.Table(
+    "tags",
+    db.Column("tag_id", db.Integer, db.ForeignKey("tag.id")),
+    db.Column("post_id", db.Integer, db.ForeignKey("post.id")),
+)
+
 permissions = db.Table(
     "permissions",
     db.Column("permission_id", db.Integer, db.ForeignKey("permission.id")),
@@ -328,8 +334,8 @@ def load_user(user_id):
 
 
 class Post(db.Model):
-    __searchable__ = ['title', 'html']
-    
+    __searchable__ = ["title", "html"]
+
     id = db.Column(db.Integer(), primary_key=True)
     title = db.Column(
         db.String(128), nullable=False, default="Unknow title", index=True
@@ -375,6 +381,18 @@ class Post(db.Model):
 
 
 db.event.listen(Post.body, "set", Post.on_changed_body)
+
+
+class Tag(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(16), nullable=False, unique=True, index=True)
+
+    posts = db.relationship(
+        "Post",
+        secondary=tags,
+        backref=db.backref("tags", lazy="joined"),
+        lazy="dynamic",
+    )
 
 
 class Comment(db.Model):
