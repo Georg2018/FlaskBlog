@@ -43,9 +43,11 @@ def create_app(config_name):
     from .controller import main as main_blueprint
 
     app.register_blueprint(main_blueprint, template_folder="../templates/main")
+
     from .controller import auth as auth_blueprint
 
     app.register_blueprint(auth_blueprint, template_folder="../templates/auth")
+
     from .controller import api_bp as api_blueprint
 
     app.register_blueprint(api_blueprint)

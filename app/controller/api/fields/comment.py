@@ -16,6 +16,7 @@ getCommentField = {
 getPostCommentsField = {
     "prev": EdgeUrl("api.post_comments", 0),
     "next": EdgeUrl("api.post_comments", 1),
+    "all_comments": fields.Integer(attribute="total"),
     "all_pages": fields.Integer(attribute="pages"),
     "urls": fields.List(
         PaginateUrl("api.comment", "commentid", "id"), attribute="items"

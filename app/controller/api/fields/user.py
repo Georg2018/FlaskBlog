@@ -24,6 +24,7 @@ getUserField = {
 getUsersField = {
     "prev_page": EdgeUrl("api.users", 0),
     "next_page": EdgeUrl("api.users", 1),
+    "all_users": fields.Integer(attribute="total"),
     "all_pages": fields.Integer(attribute="pages"),
     "users": fields.List(
         PaginateUrl("api.user", "username", "username"), attribute="items"
@@ -33,6 +34,7 @@ getUsersField = {
 getFollowersField = {
     "prev_page": EdgeUrl("api.followers", 0),
     "next_page": EdgeUrl("api.followers", 1),
+    "all_users": fields.Integer(attribute="total"),
     "all_pages": fields.Integer(attribute="pages"),
     "followers": fields.List(
         PaginateUrl("api.user", "username", "username"), attribute="items"
@@ -42,6 +44,7 @@ getFollowersField = {
 getFollowingsField = {
     "prev_page": EdgeUrl("api.followings", 0),
     "next_page": EdgeUrl("api.followings", 1),
+    "all_users": fields.Integer(attribute="total"),
     "all_pages": fields.Integer(attribute="pages"),
     "followings": fields.List(
         PaginateUrl("api.user", "username", "username"), attribute="items"

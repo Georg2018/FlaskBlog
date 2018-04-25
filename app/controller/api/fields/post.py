@@ -18,6 +18,7 @@ getPostField = {
 getPostsField = {
     "prev": EdgeUrl("api.posts", 0),
     "next": EdgeUrl("api.posts", 1),
+    "all_posts": fields.Integer(attribute="total"),
     "all_pages": fields.Integer(attribute="pages"),
     "urls": fields.List(PaginateUrl("api.post", "postid", "id"), attribute="items"),
 }
@@ -25,6 +26,7 @@ getPostsField = {
 getFollowedPostsField = {
     "prev": EdgeUrl("api.followed_posts", 0),
     "next": EdgeUrl("api.followed_posts", 1),
+    "all_posts": fields.Integer(attribute="total"),
     "all_pages": fields.Integer(attribute="pages"),
     "urls": fields.List(PaginateUrl("api.post", "postid", "id"), attribute="items"),
 }

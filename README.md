@@ -9,7 +9,7 @@ The blog hasn't been completed yet. I will add more functionalities in the futur
 Todo:
 
 - [ ] Tags.
-- [ ] Api.
+- [x] Api.
 - [ ] Third party login.
 - [ ] Search.
 
@@ -27,9 +27,3 @@ Generate Fake Data:
 Previewing the interface:
 
 ![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-23/83942832.jpg)
-
-![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-23/62023848.jpg)
-
-![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-23/96111361.jpg)
-
-![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-23/30841305.jpg)
