@@ -20,6 +20,8 @@ markdown = "*"
 bleach = "*"
 flask-restful = "*"
 flask-httpauth = "*"
+flask-msearch = "*"
+whoosh = "*"
 
 [dev-packages]
 

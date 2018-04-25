@@ -328,6 +328,8 @@ def load_user(user_id):
 
 
 class Post(db.Model):
+    __searchable__ = ['title', 'html']
+    
     id = db.Column(db.Integer(), primary_key=True)
     title = db.Column(
         db.String(128), nullable=False, default="Unknow title", index=True

@@ -8,7 +8,7 @@ import os
 from flask_migrate import Migrate, migrate, upgrade
 from faker import Faker
 from random import randint
-from app import create_app, db
+from app import create_app, db, search
 from app.models import User, Post, Comment, Follow, Permission, permissions_dict
 from app import config
 
@@ -37,6 +37,7 @@ def make_context():
         mail=mail,
         create_app=create_app,
         fake=fake,
+        search=search
     )
 
 

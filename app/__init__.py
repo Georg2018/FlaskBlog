@@ -10,6 +10,7 @@ from flask_mail import Mail
 from flask_moment import Moment
 from flask_principal import Principal, Permission, identity_loaded, UserNeed
 from flask_pagedown import PageDown
+from flask_msearch import Search
 from .config import config
 
 bcrypt = Bcrypt()
@@ -18,6 +19,7 @@ mail = Mail()
 moment = Moment()
 principal = Principal()
 pagedown = PageDown()
+search = Search()
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 login_manager.login_message = "Please login to access this page."
@@ -39,6 +41,7 @@ def create_app(config_name):
     moment.init_app(app)
     principal.init_app(app)
     pagedown.init_app(app)
+    search.init_app(app)
 
     from .controller import main as main_blueprint
 

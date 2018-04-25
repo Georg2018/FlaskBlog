@@ -13,7 +13,7 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from flask_principal import Permission, UserNeed
-from .forms import UserInfoForm, AdminInfoEditForm, PostForm, CommentForm
+from .forms import UserInfoForm, AdminInfoEditForm, PostForm, CommentForm, SearchForm
 from . import main
 from .. import (
     User, Post, Comment, Follow, db, require, need, Permission as model_permission
@@ -384,3 +384,17 @@ def show_followed():
     resp = make_response(redirect(url_for("main.index")))
     resp.set_cookie("show_followed", "1", max_age=60 * 60 * 24 * 30)
     return resp
+
+@main.route('/search')
+def search():
+    text = request.args.get('text', '', type=str)
+    if len(text) == 0 or len(text)>128:
+        return redirect(url_for('main.index'))
+
+    page = request.args.get("page", 1, type=int)
+    pagination = Post.query.filter_by(disable=False).msearch(text, fields=['html', 'title']).order_by(Post.timestamp.desc()).paginate(page,
+        current_app.config.get('FLASK_POST_PER_PAGE', 20),
+        error_out=False)
+    posts = pagination.items
+    return render_template('main/search.html', posts=posts, pagination=pagination, text=text)
+

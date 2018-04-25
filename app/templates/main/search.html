@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% import "_macro.html" as macros %}
+
+{% block title %}
+Search
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+	<div class="col col-sm-12 col-md-10 col-lg-8">
+		{% if not posts %}
+			<p class="lead">It seems that we don't have the article about "{{ text }}".</p>
+		{% else %}
+			<p class="lead">The results of searching "{{ text }}" are as follows:</p>
+		{% endif %}
+	</div>
+</div> 
+
+{{ macros.show_posts(posts, moment) }}
+
+{% if pagination.pages == 1 or pagination.pages == 0 %}
+
+	{% else %}
+		<div class="row justify-content-center">
+			<ul class="pagination">
+				{% if pagination.has_prev %}
+					<li class="page-item">
+						<a class="page-link" href="{{ url_for("main.search", page=1, text=text) }}">Previous</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#">Previous</a>
+					</li>
+				{% endif %}
+
+				{% for page in pagination.iter_pages() %}
+					{% if page == pagination.page %}
+						<li class="page-item active">
+							<a class="page-link" href="{{ url_for("main.search", page=page, text=text) }}">{{ page }}</a>
+						</li>
+					{% elif not page %}
+						<li class="page-item disabled">
+							<a class="page-link" href="#">...</a>
+						</li>
+					{% else %}
+						<li class="page-item">
+							<a class="page-link" href="{{ url_for("main.search", page=page, text=text) }}">{{ page }}</a>
+						</li>
+					{% endif %}
+				{% endfor %}
+
+				{% if pagination.has_next %}
+					<li class="page-item">
+						<a class="page-link" href="{{ url_for("main.search", page=pagination.pages, text=text) }}">Last</a>
+					</li>
+				{% else %}
+					<li class="page-item disabled">
+						<a class="page-link" href="#">Last</a>
+					</li>
+				{% endif %}
+			</ul>
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% block js %}
+{{ super() }}
+{{ moment.include_moment() }}
+{{ moment.lang('en') }}
+<script>
+	function highlightByName(keywords,domName){
+        var array = keywords.split(" "); //分割
+        var targetContent=document.getElementsByName(domName);
+        for ( var t = 0; t < targetContent.length; t++) {
+            for ( var i = 0; i < array.length; i++) {
+                //创建表达式，匹配替换
+                var reg = new RegExp("(" + array[i].replace(/,/, "|") + ")", "g");
+                //替换重新写入
+                targetContent[t].innerHTML =targetContent[t].innerHTML.replace(reg,"<font color='red'>$1</font>");
+            }
+        }
+    }
+
+    function highlightByClass(keywords,className){
+        var array = keywords.split(" "); //分割
+        var targetContent=document.getElementsByClassName (className);
+        for ( var t = 0; t < targetContent.length; t++) {
+            for ( var i = 0; i < array.length; i++) {
+                //创建表达式，匹配替换
+                var reg = new RegExp("(" + array[i].replace(/,/, "|") + ")", "g");
+                //替换重新写入
+                targetContent[t].innerHTML =targetContent[t].innerHTML.replace(reg,"<font color='red'>$1</font>");
+            }
+        }
+    }
+    // highlightByName("small","hi");
+    highlightByClass("{{ text }}","article");
+    highlightByClass("{{ text }}","title");
+</script>
+{% endblock %}

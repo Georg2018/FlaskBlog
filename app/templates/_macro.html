@@ -83,7 +83,7 @@
 					<div class="col col-10">
 						<header class="row">
 							<div class="col col-sm-12 col-md-10 mb-0 pb-0">
-								<h2><a class="text-info" href="{{ url_for('main.post', postid=post.id) }}">{{ post.title }}</a></h2>
+								<h2><a class="text-info title" href="{{ url_for('main.post', postid=post.id) }}">{{ post.title }}</a></h2>
 							<p class="text-muted mb-0" style="position:relative;top:-10px">
 								<small>
 									<a class="text-dark" href="{{ url_for('main.user', username=post.user.username) }}">{{ post.user.username }}</a>
@@ -95,7 +95,7 @@
 							</div>
 						</header>
 						<article class="row">
-							<div class="col">
+							<div class="col article">
 								{% if post.html %}
 								{{ post.html | safe }}
 								{% else %}
