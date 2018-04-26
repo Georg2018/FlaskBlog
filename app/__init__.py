@@ -77,5 +77,8 @@ def create_app(config_name):
             return False
 
     app.add_template_global(has_permission, "has_permission")
+    
+    with app.app_context(): 
+        search.create_index(update=True)
 
     return app

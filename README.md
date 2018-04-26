@@ -24,6 +24,11 @@ Generate Fake Data:
 1. Once you done the above work, you can use `flask fake_user`, `flask fake_post`, `flask fake_comment` to generate the fake data to test.
 
 ---
+Demo site:
+
+[Demo](http://101.132.174.76:3939/)
+
+---
 Previewing the interface:
 
 ![](http://arian-blogs.oss-cn-beijing.aliyuncs.com/18-4-26/24559028.jpg)

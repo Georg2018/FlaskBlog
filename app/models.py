@@ -1,4 +1,4 @@
-from . import db, bcrypt, login_manager
+from . import db, bcrypt, login_manager, search
 from flask_login import AnonymousUserMixin, current_user
 from flask_principal import Permission as pm, Need
 from flask import current_app, request
@@ -378,6 +378,8 @@ class Post(db.Model):
                 markdown(value, output_format="html"), tags=allowed_tags, strip=True
             )
         )
+    
+        search.update_index()
 
 
 db.event.listen(Post.body, "set", Post.on_changed_body)
