@@ -5,12 +5,15 @@ __author__ = "ArianX/arianx.me"
 A set of utility tools of managering the blog application.
 """
 import os
+import sys
+import subprocess
 from flask_migrate import Migrate, migrate, upgrade
 from faker import Faker
 from random import randint
 from app import create_app, db, search
 from app.models import User, Post, Comment, Follow, Permission, Tag, permissions_dict
 from app import config
+
 
 app = create_app(os.environ.get("FLASK_CONFIG") or "development")
 migrate = Migrate(app, db)
@@ -166,4 +169,11 @@ def test():
 
 
 if __name__ == "__main__":
-    app.run()
+    if sys.argv[1] == "test":
+        # Delete the argument or else it will cause cli.command to report error.
+        del sys.argv[1]
+        test()
+
+    if sys.argv[1] == "run":
+        del sys.argv[1]
+        create()

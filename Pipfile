@@ -22,6 +22,7 @@ flask-restful = "*"
 flask-httpauth = "*"
 flask-msearch = "*"
 whoosh = "*"
+coverage = "*"
 
 [dev-packages]
 

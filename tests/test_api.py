@@ -5,6 +5,54 @@ from app import create_app, db
 from app.models import User, Post, Comment, Follow, Permission, permissions_dict
 
 
+class AuthApiTestCase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        db.drop_all()
+
+    def setUp(self):
+        self.app = create_app("testing")
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        self.client = self.app.test_client()
+        db.create_all()
+        Permission.insert_permissions(permissions_dict)
+
+    def tearDown(self):
+        self.app_context.pop()
+        db.drop_all()
+
+    def open_with_auth(self, url, method, username, password, data=None):
+        auth = username + ":" + password
+        auth = auth.encode()
+        if data:
+            res = self.client.open(
+                url,
+                method=method,
+                headers={"Authorization": "Basic " + base64.b64encode(auth).decode()},
+                data=data,
+            )
+        else:
+            res = self.client.open(
+                url,
+                method=method,
+                headers={"Authorization": "Basic " + base64.b64encode(auth).decode()},
+            )
+        return json.loads(res.data)
+
+    def test_token_get(self):
+        user = User(email="test@test.com", username="test", password="test")
+        db.session.add(user)
+        db.session.commit()
+
+        res = self.open_with_auth("api/token", "GET", "test", "test")
+        self.assertTrue(len(res["token"]) > 0)
+
+        res = self.open_with_auth("api/token", "GET", res["token"], "")
+        self.assertFalse(res.get("token", False))
+
+
 class UserApiTestCase(unittest.TestCase):
 
     @classmethod
@@ -61,7 +109,11 @@ class UserApiTestCase(unittest.TestCase):
         db.session.commit()
 
         res = self.open_with_auth(
-            "api/user/" + str(user.username), "post", "test", "test", {"name": "mike"}
+            "api/user/" + str(user.username),
+            "post",
+            "test",
+            "test",
+            {"name": "mike", "age": "19", "location": "China"},
         )
         self.assertTrue(res["realname"] == "mike")
 
