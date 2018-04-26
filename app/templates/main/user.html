@@ -51,7 +51,7 @@ User
 					<div class="card-footer pb-0 text-muted">
 					<p>
 						<span class="float-right">
-							{% if current_user.id != user.id %}
+							{% if current_user.id != user.id and current_user.is_authenticated %}
 								{% if current_user.is_followed_user(user.id) and current_user.is_followed_by(user.id) %}
 									<small class="text-muted mr-1">Focus on each other</small>
 								{% elif current_user.is_followed_by(user.id) %}
