@@ -52,7 +52,7 @@ def create():
 	"""
     db.create_all()
     Permission.insert_permissions(permissions_dict)
-    # search.create_index(update=True)
+    search.create_index(update=True)
     app.run()
 
 
@@ -169,11 +169,4 @@ def test():
 
 
 if __name__ == "__main__":
-    if sys.argv[1] == "test":
-        # Delete the argument or else it will cause cli.command to report error.
-        del sys.argv[1]
-        test()
-
-    if sys.argv[1] == "run":
-        del sys.argv[1]
-        create()
+    create()

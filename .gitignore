@@ -4,3 +4,6 @@ __pycache__
 whoosh_index
 htmlcov
 .coverage
+uwsgi.ini
+.python-version
+log.log
