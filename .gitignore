@@ -5,5 +5,6 @@ whoosh_index
 htmlcov
 .coverage
 uwsgi.ini
+.idea
 .python-version
 log.log

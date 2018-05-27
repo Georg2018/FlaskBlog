@@ -58,7 +58,7 @@ class Follow(db.Model):
 class User(db.Model):
     """
 	Notice: Becauser the email is implemented by the property, you can\'t filter the
-	 email in the User.query. Use _email field to filter in the query instead.  
+	 email in the User.query. Use _email field to filter in the query instead.
 	"""
     id = db.Column(db.Integer(), primary_key=True)
     _email = db.Column(db.String(128), unique=True, index=True)
@@ -378,8 +378,8 @@ class Post(db.Model):
                 markdown(value, output_format="html"), tags=allowed_tags, strip=True
             )
         )
-    
-        search.update_index()
+
+        # search.update_index()
 
 
 db.event.listen(Post.body, "set", Post.on_changed_body)

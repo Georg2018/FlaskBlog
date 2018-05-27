@@ -23,10 +23,10 @@ fake = Faker()
 @app.shell_context_processor
 def make_context():
     """
-	Add some key components to the line command context to make the debug easier.
+        Add some key components to the line command context to make the debug easier.
 
-	:return: Return a dict which include some context informations.
-	"""
+        :return: Return a dict which include some context informations.
+        """
     from app import mail
     return dict(
         app=app,
@@ -48,8 +48,8 @@ def make_context():
 @app.cli.command()
 def create():
     """
-	Performing some necessary commands then run a app instance.
-	"""
+        Performing some necessary commands then run a app instance.
+        """
     db.create_all()
     Permission.insert_permissions(permissions_dict)
     search.create_index(update=True)
@@ -159,8 +159,8 @@ def fake_tag():
 @app.cli.command()
 def test():
     """
-	Add the "test" command to the Flask cli context. It will activate the unittest instance which locates in the tests folder.
-	"""
+        Add the "test" command to the Flask cli context. It will activate the unittest instance which locates in the tests folder.
+        """
     import unittest
 
     tests = unittest.TestLoader().discover("tests")
