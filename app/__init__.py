@@ -28,8 +28,9 @@ login_manager.session_protection = "strong"
 
 def create_app(config_name):
     """
-	To creat a application instance, introduct a name of the config object which locates in the config.py file.
-	"""
+        To creat a application instance, introduct a name of the config object
+        which locates in the config.py file.
+        """
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
@@ -77,8 +78,10 @@ def create_app(config_name):
             return False
 
     app.add_template_global(has_permission, "has_permission")
-    
-    with app.app_context(): 
-        search.create_index(update=True)
+
+    if app.config.get('FLASK_CONFIG', 'development') == 'productive':
+        # Build the post index only for the productive environment.
+        with app.app_context():
+            search.create_index(update=True)
 
     return app

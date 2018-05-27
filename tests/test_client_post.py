@@ -34,7 +34,8 @@ class PostPagesTestCase(unittest.TestCase):
 
         response = self.client.post(
             url_for("auth.login"),
-            data={"identifier": "test", "password": "test", "remember_me": "False"},
+            data={"identifier": "test", "password": "test",
+                  "remember_me": "False"},
             follow_redirects=True,
         )
         self.assertTrue("Hello, test!" in response.get_data(as_text=True))
@@ -51,7 +52,7 @@ class PostPagesTestCase(unittest.TestCase):
         )
 
         response = self.client.get(
-            url_for("main.post", postid=user.posts.all()[0].id), follow_redirects=True
+            url_for("main.post", postid=user.posts.all()[0].id)
         )
         self.assertTrue("test" in response.get_data(as_text=True))
 

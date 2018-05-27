@@ -1,8 +1,6 @@
 ## A Simple Example Blog Implemented by Flask
 
-This is a simple personal Blog that implemented by Flask web framework. It has some basic features of a blog like loggin, logout, follow, permission control, avatar, etc. It also has a azure blue theme.
-
-I also sincerely hope that it would help you.
+This is a simple personal Blog that implemented by Flask web framework. It has some features of a blog like loggin, logout, follow, permission control, avatar, etc. It also has a azure blue theme.
 
 The blog hasn't been completed yet. I will add more functionalities in the future.
 
